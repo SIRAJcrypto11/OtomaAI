@@ -145,13 +145,28 @@ The application will be available at `http://localhost:3000`.
 
 ## 🌩️ Deployment
 
-NEXUS AI is specifically optimized for Edge and Serverless architectures. The recommended deployment platform is **Vercel**.
+NEXUS AI is specifically optimized for Edge and Serverless architectures. The recommended deployment platform for the Dashboard and Orchestrator core is **Vercel**.
 
+### Standard Vercel Deployment
 1. Push your code to your GitHub repository.
 2. Import the project into your Vercel Dashboard.
 3. Attach the **Vercel Postgres** add-on directly to the project.
 4. Add all environment variables listed above to the Vercel Project Settings.
 5. Deploy! Next.js Turbopack will compile and optimize the production build.
+
+### ⚠️ Critical Production Considerations (Serverless Limits)
+
+While the Next.js Dashboard, Postgres Database, and RESTful Agents run perfectly on Vercel, there is a known architectural limitation regarding the **WhatsApp Web integration (`@whiskeysockets/baileys`)**:
+
+*   **The Limitation**: Baileys requires a persistent, always-on WebSocket connection to maintain the WhatsApp Web session. Vercel Serverless Functions execute on-demand and are killed strictly after 10-60 seconds of inactivity to save costs.
+*   **The Result**: If you run the Baileys worker directly inside Vercel, the WhatsApp connection will constantly drop and require re-authentication (QR code scanning) every few minutes.
+*   **The Enterprise Solution**: Deploy the Next.js Dashboard on **Vercel** for the UI and DB logic, but extract and deploy the WhatsApp Baileys worker script to an always-on server environment such as a **VPS, Render, or Railway**. The persistent worker can then communicate with your Vercel Orchestrator via REST API or standard Webhooks.
+
+### Mandatory Environment Keys for First Deploy
+Before hitting "Deploy" on Vercel, if you omit these keys from the Vercel Settings, the app will crash with an HTTP `500` error:
+- `POSTGRES_URL` (Auto-generated if using Vercel Postgres Add-on)
+- `AUTH_SECRET` (Run `npx auth secret` locally or generate a 32-char string)
+- `GEMINI_API_KEY` (Or `GROQ_API_KEY`, otherwise agents cannot generate responses)
 
 ---
 
