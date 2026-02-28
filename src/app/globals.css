@@ -1,26 +1,107 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-success: var(--success);
+  --color-danger: var(--danger);
+  --color-warning: var(--warning);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+}
+
+:root {
+  --background: #F8F9FA;
+  --foreground: #202124;
+  
+  --primary: #1A73E8;
+  --primary-foreground: #FFFFFF;
+  
+  --secondary: #E8F0FE;
+  --secondary-foreground: #1967D2;
+  
+  --success: #1E8E3E;
+  --danger: #D93025;
+  --warning: #F9AB00;
+  
+  --muted: #F1F3F4;
+  --muted-foreground: #5F6368;
+  
+  --accent: #E8F0FE;
+  --accent-foreground: #1A73E8;
+  
+  --border: #DADCE0;
+  --input: #DADCE0;
+  --ring: #1A73E8;
+  
+  --radius: 0.5rem;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #121212;
+    --foreground: #E8EAED;
+    
+    --primary: #8AB4F8;
+    --primary-foreground: #202124;
+    
+    --secondary: #3C4043;
+    --secondary-foreground: #E8EAED;
+    
+    --success: #81C995;
+    --danger: #F28B82;
+    --warning: #FDD663;
+    
+    --muted: #202124;
+    --muted-foreground: #9AA0A6;
+    
+    --accent: #303134;
+    --accent-foreground: #8AB4F8;
+    
+    --border: #3C4043;
+    --input: #3C4043;
+    --ring: #8AB4F8;
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-feature-settings: "rlig" 1, "calt" 1;
 }
+
+/* Custom Scrollbar for Premium Feel */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted-foreground);
+}
+
+/* Glassmorphism Helper */
+.glass {
+  background: rgba(var(--background), 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+

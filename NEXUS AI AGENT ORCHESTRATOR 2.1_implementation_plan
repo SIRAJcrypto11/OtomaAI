@@ -1,0 +1,670 @@
+# 🚀 NEXUS AI — AI Agent Orchestrator Platform
+
+## Jawaban Langsung untuk Pertanyaan Anda
+
+### ✅ Model Bisnis: Infrastruktur Agnostik (BYOK)
+
+**Sangat Jelas.** Kita akan membangun sistem ini sebagai **"AI Infrastructure-as-a-Service"**. 
+
+*   **Platform (Sistem Kita):** Menyediakan Dashboard, Orkestersi Agent, Workflow Builder, Database, Memory, dan semua integrasi (WA, TG, dll).
+*   **Intelligence (Otak):** USER menyediakan sendiri API Key mereka (Gemini, Groq, OpenAI, dll).
+*   **Keuntungan:** Anda (sebagai pemilik platform) tidak perlu pusing memikirkan biaya server AI atau hosting model lokal yang berat. Tanggung jawab "biaya otak" ada pada masing-masing user.
+
+---
+
+### ⚙️ Manajemen Multi-Provider API
+
+Sistem akan mendukung berbagai provider sehingga user bebas memilih sesuai key yang mereka punya:
+
+*   **Google Gemini** (User input key mereka sendiri)
+*   **Groq** (User input key mereka sendiri)
+*   **OpenAI / Anthropic** (Ready untuk integrasi masa depan)
+*   **Local Backend (Opsional)**: Jika user kebetulan punya Ollama sendiri, mereka bisa memasukkan URL mereka ke sistem kita.
+
+### ✅ Apakah Bisa Pakai API Gratis?
+
+**YA.** Berikut API gratis berkualitas tinggi yang tersedia:
+
+| Provider | Free Tier | Keunggulan |
+|----------|-----------|------------|
+| **Google Gemini** | 15 RPM, 1M+ tokens/hari | Model terbaik Google, function calling |
+| **Groq** | 30 RPM, sangat cepat | Inference tercepat di dunia |
+| **HuggingFace** | Ribuan model gratis | Open source, customizable |
+| **Ollama** | 100% gratis (lokal) | Privasi total, tanpa batas |
+| **Telegram Bot API** | Unlimited, gratis | Paling populer di Indonesia |
+| **Discord Bot API** | Gratis | Komunitas besar |
+| **Google Sheets/Calendar API** | Gratis (quota-based) | Produktivitas |
+| **Supabase** | 500MB DB gratis | PostgreSQL + Auth + Storage |
+| **Upstash Redis** | 10K commands/hari gratis | Cache & Queue |
+| **Vercel** | 100GB bandwidth gratis | Hosting & deployment |
+
+### ✅ Arsitektur Cloud & Local Baru
+
+| Komponen | Provider | Keunggulan |
+|----------|----------|------------|
+| **Deployment** | **Vercel** | Custom domain gratis + SSL, integrasi otomatis. |
+| **Database** | **Vercel Postgres** | Native integration dengan Vercel, lebih cepat untuk aplikasi Next.js. |
+| **Storage** | **Cloudinary** | Free tier 25GB, auto-optimization gambar/video. |
+| **Otak AI (Local)** | **Ollama** | Mengeksekusi model (Llama 3, Mistral) secara lokal tanpa bayar API key per token. |
+| **Otak AI (Cloud)** | **Gemini & Groq** | Sebagai fallback gratis yang sangat cerdas. |
+
+### ✅ Apakah Bisa Menghasilkan Uang?
+
+**YA.** Ada **6 revenue stream** yang realistis dan bisa langsung dijalankan.
+
+---
+
+## 💰 Model Bisnis & Revenue Streams
+
+### Stream 1: AI Customer Service Bot (Target: UMKM Indonesia)
+
+| Item | Detail |
+|------|--------|
+| **Target Market** | 65 juta+ UMKM di Indonesia |
+| **Harga** | Rp 200K - 2M/bulan per client |
+| **Value Proposition** | Auto-reply 24/7 di WhatsApp & Telegram |
+| **Fitur** | FAQ otomatis, tracking order, komplain handler |
+| **Potensi** | 100 client × Rp 500K = **Rp 50 Juta/bulan** |
+
+### Stream 2: AI Content Generator
+
+| Item | Detail |
+|------|--------|
+| **Target Market** | Content creator, SMM, bisnis online |
+| **Harga** | Rp 100K - 500K/bulan |
+| **Value Proposition** | Generate konten sosmed, artikel SEO, deskripsi produk |
+| **Potensi** | 500 user × Rp 200K = **Rp 100 Juta/bulan** |
+
+### Stream 3: E-Commerce Automation
+
+| Item | Detail |
+|------|--------|
+| **Target Market** | Seller Shopee/Tokopedia |
+| **Harga** | Rp 300K - 1M/bulan |
+| **Value Proposition** | Auto-reply chat, monitoring harga, alert stok |
+| **Potensi** | 200 seller × Rp 500K = **Rp 100 Juta/bulan** |
+
+### Stream 4: Workflow Automation SaaS (Zapier Indonesia)
+
+| Item | Detail |
+|------|--------|
+| **Target Market** | Bisnis kecil-menengah |
+| **Harga** | Rp 150K - 1M/bulan |
+| **Value Proposition** | Hubungkan apps + AI decision making |
+| **Potensi** | 300 user × Rp 300K = **Rp 90 Juta/bulan** |
+
+### Stream 5: Agent Templates Marketplace
+
+| Item | Detail |
+|------|--------|
+| **Target Market** | Developer, business owner |
+| **Harga** | Rp 50K - 500K per template |
+| **Value Proposition** | Ready-made AI agent untuk berbagai use case |
+| **Potensi** | Komisi 30% = **Rp 20-50 Juta/bulan** |
+
+### Stream 6: White-Label Solution
+
+| Item | Detail |
+|------|--------|
+| **Target Market** | Agency, software house |
+| **Harga** | Rp 5-20 Juta/bulan |
+| **Value Proposition** | Mereka rebrand platform kita |
+| **Potensi** | 10 agency × Rp 10 Juta = **Rp 100 Juta/bulan** |
+
+> [!IMPORTANT]
+> **Total Potensi Revenue: Rp 400-500 Juta/bulan** (saat fully scaled)
+> Target realistis bulan pertama: **Rp 5-15 Juta/bulan** dengan 20-30 client pertama
+
+---
+
+## 🏗️ Arsitektur Sistem
+
+```mermaid
+graph TB
+    subgraph "Frontend Layer"
+        DASH[🖥️ Dashboard - Next.js 14]
+        LAND[🌐 Landing Page]
+        DOCK[📱 Mobile PWA]
+    end
+
+    subgraph "API Gateway"
+        API[⚡ Next.js API Routes]
+        WH[🔗 Webhook Handler]
+        WS[🔌 WebSocket Server]
+    end
+
+    subgraph "Orchestrator Engine"
+        ORCH[🧠 Agent Orchestrator]
+        EXEC[⚙️ Task Executor]
+        QUEUE[📋 Job Queue - BullMQ]
+        MEM[💾 Memory Manager]
+        TOOL[🔧 Tool Registry]
+    end
+
+    subgraph "The Triple-Brain Engine"
+        WLLM[🌐 Browser AI - WebLLM/Transformers.js]
+        OLL[🦙 Server AI - Ollama Private]
+        CLOUD[☁️ Cloud Fallback - Gemini/Groq]
+    end
+
+    subgraph "Autonomous Loops"
+        PLAN[📋 Planner]
+        EXEC[⚙️ Executor]
+        REFL[🔍 Reflector/Critic]
+    end
+
+    subgraph "Integrations"
+        TG[📱 Telegram]
+        WA[💬 WhatsApp]
+        DC[🎮 Discord]
+        EM[📧 Email]
+        GS[📊 Google Sheets]
+        SC[🛒 E-Commerce]
+    end
+
+    subgraph "Data Layer - ALL FREE"
+        DB[(🐘 Vercel Postgres)]
+        CACHE[(⚡ Upstash Redis)]
+        CLD[(☁️ Cloudinary Storage)]
+        VDB[(🔍 Orama/Chroma Local)]
+    end
+
+    DASH --> API
+    LAND --> API
+    API --> ORCH
+    WH --> ORCH
+    ORCH --> EXEC
+    EXEC --> QUEUE
+    EXEC --> MEM
+    EXEC --> TOOL
+    TOOL --> GEM & GROQ & HF & OLL
+    TOOL --> TG & WA & DC & EM
+    TOOL --> GS & GC & SC
+    ORCH --> DB
+    MEM --> VDB
+    QUEUE --> CACHE
+```
+
+---
+
+## 🛠️ Technology Stack (100% Free / Open Source)
+
+### Core Framework
+
+| Layer | Technology | Cost | Why |
+|-------|-----------|------|-----|
+| **Frontend** | Next.js 14 (App Router) | Free | SSR, API routes, familiar |
+| **Styling** | Tailwind CSS + shadcn/ui | Free | Rapid UI development |
+| **Auth** | NextAuth.js | Free | Google, GitHub OAuth |
+| **Database** | **Vercel Postgres** | Free tier | Terintegrasi langsung dengan Vercel |
+| **Cache/Queue** | Upstash Redis | Free (10K/day) | Serverless, fast |
+| **Vector DB** | ChromaDB | Free | Semantic search, memory |
+| **File Storage** | **Cloudinary** | Free (25GB) | Jauh lebih besar dari Supabase |
+| **Hosting** | Vercel | Free tier | Auto-deploy, custom domain gratis |
+| **Worker** | Vercel Cron + Edge Functions | Free tier | Background jobs |
+
+### AI & LLM (Sovereignty Stack)
+
+| Provider | Tech Stack | Sifat | Best For |
+|----------|------------|-------|----------|
+| **Browser AI** | **WebLLM + Transformers.js** | 100% Local | Task ringan, privasi, offline |
+| **Server AI** | **Ollama (Llama 3 / DeepSeek)** | Private Host | Penalaran berat tanpa biaya token |
+| **Cloud AI** | **Gemini / Groq** | API Fallback | Kecepatan & skalabilitas tinggi |
+
+### Fitur "Autonomous" yang Dimaksimalkan
+
+1.  **Self-Correction**: Jika agent gagal melakukan aksi (misal: gagal kirim WA), agent akan menganalisa error sendiri dan mencoba cara lain.
+2.  **Autonomous Research**: Agent bisa browsing internet secara mandiri untuk mencari informasi pendukung sebelum menjawab.
+3.  **Cross-App Workflow**: Satu perintah bisa memicu rangkaian aksi (misal: "Kirim invoice" → Cek tabel → Buat PDF di Cloudinary → Kirim ke WA & Email).
+
+### Integrations
+
+| Service | API | Cost | Complexity |
+|---------|-----|------|-----------|
+| **Telegram** | Bot API | Free | ⭐ Easy |
+| **WhatsApp** | Baileys (unofficial) | Free | ⭐⭐ Medium |
+| **Discord** | Discord.js | Free | ⭐ Easy |
+| **Email** | Nodemailer + Gmail | Free | ⭐ Easy |
+| **Google Sheets** | Google API | Free | ⭐⭐ Medium |
+| **Google Calendar** | Google API | Free | ⭐⭐ Medium |
+| **Web Scraping** | Puppeteer/Cheerio | Free | ⭐⭐ Medium |
+| **Payment** | Midtrans/Xendit | Per-transaction | ⭐⭐⭐ Complex |
+
+---
+
+## 📁 Struktur Project
+
+```
+AI AGENT ORCHERSTRATOR/
+├── 📁 app/                          # Next.js App Router
+│   ├── 📁 (auth)/                   # Auth pages
+│   │   ├── login/page.js
+│   │   └── register/page.js
+│   ├── 📁 (dashboard)/              # Protected dashboard
+│   │   ├── layout.js
+│   │   ├── page.js                  # Dashboard home
+│   │   ├── 📁 agents/               # Agent management
+│   │   │   ├── page.js              # List agents
+│   │   │   ├── create/page.js       # Create agent
+│   │   │   └── [id]/page.js         # Agent detail
+│   │   ├── 📁 workflows/            # Workflow builder
+│   │   │   ├── page.js
+│   │   │   └── [id]/page.js
+│   │   ├── 📁 integrations/         # Integration hub
+│   │   │   └── page.js
+│   │   ├── 📁 marketplace/          # Template marketplace
+│   │   │   └── page.js
+│   │   ├── 📁 analytics/            # Analytics & revenue
+│   │   │   └── page.js
+│   │   └── 📁 settings/             # Account settings
+│   │       └── page.js
+│   ├── 📁 api/                      # API Routes
+│   │   ├── 📁 agents/               # Agent CRUD
+│   │   ├── 📁 webhooks/             # Webhook receivers
+│   │   │   ├── telegram/route.js
+│   │   │   ├── whatsapp/route.js
+│   │   │   └── discord/route.js
+│   │   ├── 📁 ai/                   # AI endpoints
+│   │   │   ├── chat/route.js
+│   │   │   └── generate/route.js
+│   │   ├── 📁 integrations/         # Integration APIs
+│   │   └── 📁 billing/              # Payment & billing
+│   ├── layout.js
+│   ├── page.js                      # Landing page
+│   └── globals.css
+│
+├── 📁 lib/                          # Core libraries
+│   ├── 📁 orchestrator/             # Agent orchestrator engine
+│   │   ├── agent.js                 # Agent class
+│   │   ├── executor.js              # Task executor
+│   │   ├── memory.js                # Memory manager
+│   │   ├── planner.js               # Task planner
+│   │   └── registry.js              # Tool registry
+│   ├── 📁 ai/                       # AI providers
+│   │   ├── gemini.js                # Google Gemini
+│   │   ├── groq.js                  # Groq
+│   │   ├── huggingface.js           # HuggingFace
+│   │   └── provider.js              # Provider abstraction
+│   ├── 📁 integrations/             # Integration connectors
+│   │   ├── telegram.js
+│   │   ├── whatsapp.js
+│   │   ├── discord.js
+│   │   ├── email.js
+│   │   ├── google-sheets.js
+│   │   ├── google-calendar.js
+│   │   └── web-scraper.js
+│   ├── 📁 tools/                    # Agent tools
+│   │   ├── send-message.js
+│   │   ├── read-spreadsheet.js
+│   │   ├── create-document.js
+│   │   ├── search-web.js
+│   │   ├── scrape-url.js
+│   │   └── manage-calendar.js
+│   ├── 📁 db/                       # Database
+│   │   ├── supabase.js              # Supabase client
+│   │   ├── schema.sql               # Database schema
+│   │   └── migrations/
+│   └── 📁 utils/                    # Utilities
+│       ├── auth.js
+│       ├── rate-limiter.js
+│       └── logger.js
+│
+├── 📁 components/                   # React components
+│   ├── 📁 ui/                       # Base UI (shadcn)
+│   ├── 📁 dashboard/                # Dashboard components
+│   ├── 📁 agents/                   # Agent-related components
+│   ├── 📁 workflows/                # Workflow builder components
+│   └── 📁 landing/                  # Landing page components
+│
+├── 📁 public/                       # Static assets
+├── .env.local                       # Environment variables
+├── package.json
+├── next.config.js
+└── README.md
+```
+
+---
+
+## 🔧 Proposed Changes — Phase 1: Foundation
+
+### Core Setup
+
+#### [NEW] [package.json](file:///c:/Users/Siraj%20Nur%20Ihrom/Documents/SNISHOP.ID/AI%20AGENT%20ORCHERSTRATOR/package.json)
+- Next.js 14 project initialization with all dependencies
+- Key packages: `@google/generative-ai`, `groq-sdk`, `node-telegram-bot-api`, `@supabase/supabase-js`, `@upstash/redis`
+
+#### [NEW] Core Orchestrator Engine (`lib/orchestrator/`)
+- `agent.js` — Agent class with lifecycle management (create, start, stop, pause)
+- `executor.js` — Task execution with retry logic and error handling
+- `memory.js` — Conversation history + vector memory for context
+- `planner.js` — ReAct pattern: Reason → Act → Observe cycle
+- `registry.js` — Dynamic tool registration and discovery
+
+#### [NEW] AI Provider Layer (`lib/ai/`)
+- `provider.js` — Abstract provider interface with automatic fallback
+- `gemini.js` — Google Gemini integration with function calling
+- `groq.js` — Groq integration for fast chat responses
+
+#### [NEW] Integration Connectors (`lib/integrations/`)
+- `telegram.js` — Telegram bot with webhook mode
+- `whatsapp.js` — WhatsApp via Baileys library
+- `email.js` — Email via Nodemailer
+
+#### [NEW] Database Schema (`lib/db/schema.sql`)
+Tables: `users`, `agents`, `conversations`, `messages`, `integrations`, `workflows`, `billing`, `analytics`
+
+#### [NEW] Dashboard Pages (`app/(dashboard)/`)
+- Agent management, workflow builder, integration hub, analytics
+
+#### [NEW] Landing Page (`app/page.js`)
+- Marketing landing page with pricing, features, testimonials
+
+---
+
+## 📅 Development Roadmap
+
+### 🟢 Phase 1: MVP Foundation (Week 1-2)
+
+| Task | Priority | Output |
+|------|----------|--------|
+| Project setup (Next.js + dependencies) | 🔴 Critical | Working skeleton |
+| Supabase database + schema | 🔴 Critical | Data layer |
+| Auth (NextAuth + Google OAuth) | 🔴 Critical | Login system |
+| Basic dashboard layout | 🔴 Critical | UI framework |
+| Gemini AI integration | 🔴 Critical | AI brain |
+| Simple chatbot agent (1 agent) | 🔴 Critical | **First working agent** |
+
+### 🟡 Phase 2: Integration Layer (Week 3-4)
+
+| Task | Priority | Output |
+|------|----------|--------|
+| Telegram bot integration | 🔴 Critical | Messaging channel |
+| WhatsApp integration (Baileys) | 🟡 High | Indonesia's #1 platform |
+| Email integration | 🟡 High | Business communication |
+| Google Sheets integration | 🟡 High | Data management |
+| Tool framework (function calling) | 🔴 Critical | Agent capabilities |
+| Memory system (ChromaDB) | 🟡 High | Context awareness |
+
+### 🟠 Phase 3: Business Features (Week 5-6)
+
+| Task | Priority | Output |
+|------|----------|--------|
+| Visual workflow builder | 🟡 High | No-code automation |
+| Multi-agent orchestration | 🟡 High | Complex tasks |
+| E-commerce monitoring | 🟡 High | Business value |
+| Content generation pipeline | 🟡 High | Content creation |
+| Analytics dashboard | 🟡 High | Insights |
+
+### 🔴 Phase 4: Monetization (Week 7-8)
+
+| Task | Priority | Output |
+|------|----------|--------|
+| Subscription tiers (Free/Pro/Business) | 🔴 Critical | Revenue |
+| Midtrans payment integration | 🔴 Critical | Indonesian payments |
+| Usage metering & limits | 🔴 Critical | Fair pricing |
+| Landing page + marketing | 🔴 Critical | User acquisition |
+
+### 🟣 Phase 5: Scale (Week 9+)
+
+| Task | Priority | Output |
+|------|----------|--------|
+| Template marketplace | 🟡 High | Community & revenue |
+| White-label system | 🟡 High | B2B revenue |
+| API-as-a-Service | 🟡 High | Developer market |
+| Multi-tenant optimization | 🟡 High | Scale |
+
+---
+
+## 💡 Contoh Use Case Nyata
+
+### Use Case 1: Bot CS Toko Online
+
+```
+Pemilik Toko → Setup agent "CS Bot" → Connect ke WhatsApp & Telegram
+Customer kirim: "Kak, barang udah dikirim belum?"
+→ Agent cek ke Google Sheets (database order)
+→ Agent reply: "Halo kak! Order #12345 sudah dikirim via JNE, 
+   no resi: JP1234567890. Estimasi tiba 2-3 hari ya 😊"
+```
+
+### Use Case 2: Content Creator Assistant
+
+```
+Creator → Setup agent "Content Gen" → Connect ke Notion & Instagram
+Creator: "Buatkan konten Instagram tentang tips skincare untuk minggu ini"
+→ Agent research trending topics (web scraping)
+→ Agent generate 7 caption + hashtag
+→ Agent simpan ke Notion sebagai content calendar
+→ Agent kirim reminder via Telegram setiap hari
+```
+
+### Use Case 3: E-Commerce Price Monitor
+
+```
+Seller → Setup agent "Price Watch" → Connect ke Shopee & Telegram
+→ Agent monitoring harga kompetitor setiap jam
+→ Jika harga turun > 10%:
+   → Agent kirim alert ke Telegram
+   → Agent suggest harga baru
+   → Agent update spreadsheet
+```
+
+---
+
+## ⚠️ Risiko & Mitigasi
+
+| Risiko | Impact | Mitigasi |
+|--------|--------|----------|
+| Free API rate limit | Medium | Multi-provider fallback, caching |
+| WhatsApp ban (unofficial API) | High | Gunakan nomor dedicated, rate limit |
+| Supabase free tier space | Low | Optimize queries, archive old data |
+| Model hallucination | Medium | Validation layer, human-in-the-loop |
+| Kompetitor (ChatGPT, etc) | Medium | Fokus pada integrasi Indonesia-specific |
+
+---
+
+## ✅ Verification Plan
+
+### Automated Tests
+1. **Unit tests** untuk AI provider layer — `npm test`
+2. **Integration tests** untuk setiap connector (Telegram, Email, Sheets) — mock API tests
+3. **E2E tests** — Playwright browser tests untuk dashboard flow
+
+### Manual Verification
+1. **Agent Creation Flow** — Buat agent baru dari dashboard, test response
+2. **Telegram Integration** — Kirim pesan ke bot, verifikasi reply
+3. **Multi-provider Fallback** — Disable Gemini, verifikasi auto-switch ke Groq
+4. **Mobile Responsive** — Test dashboard di 320px viewport
+5. **Deploy ke Vercel** — Build + deploy, test production environment
+
+---
+
+## 🎯 Quick Start: Apa yang Kita Bangun Pertama?
+
+> [!TIP]
+> **Rekomendasi: Mulai dari Phase 1 MVP** — Fokus pada 1 agent + 1 integration (Telegram) + Gemini AI. Ini sudah bisa di-demo dan mulai mencari client pertama dalam 2 minggu.
+
+**Langkah pertama yang akan saya lakukan:**
+1. Initialize Next.js project dengan semua dependencies
+2. Setup Supabase database
+3. Build orchestrator engine core
+4. Integrate Google Gemini
+5. Build Telegram bot connector
+6. Create dashboard UI
+7. **Deploy ke Vercel → Mulai cari client!**
+
+---
+
+> [!IMPORTANT]
+> **Apakah Anda setuju dengan rencana ini? Apakah ada yang perlu diubah atau ditambahkan sebelum saya mulai building?**
+> 
+> Beberapa pertanyaan untuk Anda:
+> 1. **Nama platform**: Apakah "NEXUS AI" cocok, atau ada nama lain yang Anda inginkan?
+> 2. **Prioritas integrasi**: WhatsApp atau Telegram duluan?
+> 3. **Target market**: Fokus ke UMKM Indonesia dulu, atau global?
+> 4. **Styling**: Pakai Tailwind CSS atau vanilla CSS?
+
+
+
+
+# 🏛️ NEXUS AI — Master Infrastructure Blueprint
+
+> [!IMPORTANT]
+> **STATUS: PRODUCTION READY.** Rencana ini disusun dengan standar **Singularity Architect**. Tidak ada ruang untuk error, tidak ada placeholders, dan semua dirancang untuk skalabilitas dunia nyata (Production Level).
+
+## I. Filosofi Sistem & Infrastruktur
+
+Sistem ini dirancang sebagai **Agno-AI Orchestrator** — sebuah infrastruktur yang "tidak peduli" apa otak AI-nya, namun menyediakan sarana (tools, memory, connectivity) yang sempurna agar AI tersebut bisa bekerja secara otonom.
+
+### 📜 Protokol Eksekusi "Zero-Miss"
+1.  **Strict Planning**: Setiap baris kode harus merujuk pada Blueprint ini.
+2.  **Regression Zero**: Fitur baru tidak boleh merusak fitur lama (Shadow Deployment & Atomic Commits).
+3.  **No Placeholders**: Semua fungsi harus "live" di hari pertama, bukan `// TODO`.
+4.  **Production-First**: Tidak ada fitur "khusus local". Semua harus bisa berjalan di Vercel dengan baik.
+
+---
+
+## II. UI/UX "Sovereignty" Design System
+
+Visual adalah hakim pertama pengguna. Kita mengikuti **Standard Google/High-Premium** dengan estetika modern.
+
+### 🎨 Palet Warna (Premium Google Standard)
+| Token | Hex | Usage |
+|-------|-----|-------|
+| **Primary** | `#1A73E8` | Buttons, Active States, Brand marks |
+| **Success** | `#1E8E3E` | Positive actions, active status |
+| **Danger** | `#D93025` | Deletive actions, error states |
+| **Warning** | `#F9AB00` | Notifications, pending tasks |
+| **Text Primary** | `#202124` | Main headings, body text |
+| **Text Secondary** | `#5F6368` | Meta data, disabled states |
+| **Border** | `#DADCE0` | Card borders, dividers |
+| **Surface** | `#FFFFFF` | Background Cards, Panels |
+| **Background** | `#F8F9FA` | Main Page Background |
+
+### 🔳 Layout & Konsistensi (Global Specs)
+- **Container**: Max-width `1440px`.
+- **Spacing Unit**: multiples of `4px` (Base 8 system).
+- **Navigation**: Sidebar tetap di kiri (Mobile: Bottom Navigation).
+- **Glassmorphism**: Digunakan halus pada Header (Blur: 10px, Opacity: 80%).
+- **Micro-Interactions**: Hover scale `1.02`, transitions `200ms ease-in-out`.
+- **Skeleton Loaders**: Wajib di semua komponen data-fetching.
+
+---
+
+## III. Arsitektur Multi-Role & Workspace
+
+Sistem mandiri dengan **Role-Based Access Control (RBAC)** yang ketat.
+
+### 👥 Hierarki Role
+1.  **Super Admin (Pemilik Platform)**
+    - Dashboard utama kontrol seluruh sistem.
+    - Monitor penggunaan API global (jika diijinkan).
+    - Manage Subscription & Revenue.
+2.  **Workspace Owner**
+    - Akses penuh ke workspace mereka.
+    - Manajemen Billing & API Key.
+    - Undang Member.
+3.  **Agent Builder (Creator)**
+    - Membuat dan mengedit Agent & Workflow.
+    - Tidak bisa melihat Billing/Metode Pembayaran.
+4.  **Operator**
+    - Hanya berinteraksi dengan Agent yang sudah Live.
+    - Melihat logs/chat history.
+
+### 🏢 Multi-Tenancy Logic
+Setiap Workspace memiliki "Isolation Layer":
+- Database filter by `workspace_id`.
+- Storage folder by `workspace_id/user_id`.
+- API Key terenkripsi (AES-256) per user.
+
+---
+
+## IV. Spesifikasi Dashboard & Menu (Strict)
+
+Setiap menu **WAJIB** memiliki komponen berikut:
+
+### 1. Overview Dashboard (Real-time)
+- **Stats Card**: Total Messages, Active Agents, Revenue Generated (for owner).
+- **Activity Graph**: Log aktivitas agent 24 jam terakhir.
+- **Top Agents**: Agent mana yang paling banyak digunakan.
+
+### 2. Agent Management Hub
+- **Lister**: Grid view premium dengan status Chip (Active/Paused/Offline).
+- **Builder UI**:
+    - **Prompt IDE**: Editor teks cerdas dengan template prompt.
+    - **Capability Selector**: Centang integrasi (WA, TG, Sheets).
+    - **Brain Selector**: Pilih API Key (Gemini/Groq/OpenAI).
+
+### 3. Workflow Builder (Visual Automation)
+- **Canvas System**: Drag-and-drop workflow (Powered by React Flow).
+- **Node Types**: Trigger (Webhook/Time), Action (AI Task/API Call), Condition (If/Else).
+
+### 4. Integration & API Settings (Crucial)
+- **BYOK Connector**: Input & Test Key (Safe storage).
+- **Channel Connectors**: Tutorial step-by-step menghubungkan WA/Telegram.
+
+---
+
+## V. Technical Stack & Security (Production Ready)
+
+| Layer | Provider | Spesifikasi |
+|-------|----------|-------------|
+| **Core** | Next.js 14 | App Router, Server Actions, Middleware. |
+| **Database** | Vercel Postgres | Neon-powered, Serverless. |
+| **Storage** | Cloudinary | 25GB Free, Media Transformation logic. |
+| **Realtime** | Pusher / Socket.io | Notifikasi status eksekusi agent. |
+| **Security** | Auth.js (v5) | Session based, Email OTP + Social Login. |
+| **Cron Jobs** | Vercel Cron | Monitoring tugas terjadwal (misal: cek harga setiap jam). |
+
+> [!WARNING]
+> **KEAMANAN DATA**: Semua API Key User **WAJIB** dienkripsi menggunakan `crypto` module (AES-256-GCM) sebelum masuk database. Hanya sistem yang bisa mendekripsi saat pengiriman request ke LLM.
+
+---
+
+## VI. Roadmap Eksekusi "Surgical Precision"
+
+### 🟢 Tahap 1: Core Genesis (Infrastruktur & Auth)
+- [ ] Setup turborepo/project structure.
+- [ ] Implementasi Design System Tokens di `globals.css`.
+- [ ] Database Schema Migration (Postgres).
+- [ ] Auth flow dengan RBAC Middleware.
+
+### 🟡 Tahap 2: The Orchestrator Brain
+- [ ] Lib AI Provider (By-Pass Mode): Menangani berbagai API Key user.
+- [ ] Agent Class & Lifecycle Manager.
+- [ ] Memory System (Postgres + Redis).
+
+### 🟠 Tahap 3: Connectivity & Channels
+- [ ] Telegram Webhook integration.
+- [ ] WhatsApp (Baileys) Headless Service.
+- [ ] Cloudinary Media Pipeline.
+
+### 🔴 Tahap 4: UI Polishing & Scaling
+- [ ] Visual Workflow Builder implementation.
+- [ ] Advanced Analytics Dashboard.
+- [ ] Final Security Audit & Deployment.
+
+---
+
+## 📈 Revenue Generation Strategy (Detail Bisnis)
+
+| Paket | Harga (Saran) | Fitur |
+|-------|---------------|-------|
+| **Starter** | Rp 0 (Free) | 1 Agent, 1 Integration, Communal Memory. |
+| **Professional**| Rp 299K/bln | 10 Agents, Multiple Integrations, Shared Workspace. |
+| **Enterprise** | Rp 1.499K/bln | Unlimited Agents, Custom Tools, White-labeling. |
+
+---
+
+## ✅ Checklist "Zero-Failure" Sebelum Building
+- [ ] Environment Variables mapping (Secret Keys).
+- [ ] Database Connection Pool verified.
+- [ ] SSL Enabled on custom domain.
+- [ ] Error Boundary implemented on all key components.
+- [ ] Rate Limiter active (per workspace).
+
+---
+
+> [!IMPORTANT]
+> **APAKAH ANDA SETUJU DENGAN MASTER BLUEPRINT INI?**
+> Rencana ini sekarang bersifat **IMMU-STRICT** (Sangat Ketat). Saya akan mulai membangun project ini dari baris pertama dengan ketelitian penuh.
