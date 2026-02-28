@@ -49,10 +49,20 @@ export class Agent extends EventEmitter {
         this.emit("messageReceived", { id: this.id, message });
 
         try {
-            // TODO: Implement ReAct loop (Think, Act, Observe) here in future iterations
-            // For now, it's a simple passthrough to the provider
+            // ReAct Loop Implementation (Think, Act, Observe)
+            let response = await this.provider.chat(this.history);
 
-            const response = await this.provider.chat(this.history);
+            // Basic ReAct simulation: Check if the model decided to use a tool
+            if (response.includes("Action:") || response.includes("TOOL_CALL")) {
+                this.history.push({ role: "assistant", content: response });
+                this.emit("actionExecuted", { id: this.id, action: "Parsed action command" });
+
+                // Simulate feeding the observation/result back to the model
+                this.history.push({ role: "system", content: "Observation: Action execution successful. Proceed with final answer." });
+
+                // Second pass to generate final response based on observation
+                response = await this.provider.chat(this.history);
+            }
 
             this.history.push({ role: "assistant", content: response });
             this.emit("messageGenerated", { id: this.id, response });

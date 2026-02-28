@@ -1,15 +1,13 @@
 import { Redis } from "@upstash/redis";
 import { sql } from "@vercel/postgres";
 
-// We fallback to dummy strings if env is not loaded to prevent build crashes, 
-// though these should be present in production.
-const redisUrl = process.env.UPSTASH_REDIS_REST_URL || 'https://example.upstash.io';
-const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN || 'dummy-token';
+const redisUrl = process.env.UPSTASH_REDIS_REST_URL;
+const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN;
 
-const redis = new Redis({
+const redis = redisUrl && redisToken ? new Redis({
     url: redisUrl,
     token: redisToken,
-});
+}) : null;
 
 export interface MemoryMessage {
     id: string;
@@ -34,7 +32,7 @@ export class MemoryManager {
 
     public async addMessage(message: MemoryMessage): Promise<void> {
         // 1. Save to short-term cache (Redis) - Extremely Fast
-        if (process.env.UPSTASH_REDIS_REST_URL) {
+        if (redis) {
             try {
                 await redis.rpush(this.getCacheKey(), JSON.stringify(message));
                 // Expire conversation cache after 24 hours of inactivity
@@ -60,7 +58,7 @@ export class MemoryManager {
 
     public async getRecentHistory(limit: number = 20): Promise<MemoryMessage[]> {
         // Try to get from Redis first (Speed)
-        if (process.env.UPSTASH_REDIS_REST_URL) {
+        if (redis) {
             try {
                 const cached = await redis.lrange(this.getCacheKey(), -limit, -1);
                 if (cached && cached.length > 0) {

@@ -1,6 +1,7 @@
 import React from "react";
 import { ArrowLeft, Save, Play, Bot, Zap, MessageSquare, Database } from "lucide-react";
 import Link from "next/link";
+import { createAgent } from "@/app/actions/agents";
 
 export const metadata = {
     title: "Create Agent | NEXUS AI",
@@ -21,11 +22,11 @@ export default function CreateAgentPage() {
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
-                    <button className="flex items-center px-4 py-2 border border-slate-300 bg-white text-slate-700 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors">
+                    <button type="button" className="flex items-center px-4 py-2 border border-slate-300 bg-white text-slate-700 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors">
                         <Save className="w-4 h-4 mr-2" />
                         Save Draft
                     </button>
-                    <button className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 shadow-sm transition-colors">
+                    <button type="submit" form="create-agent-form" className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 shadow-sm transition-colors">
                         <Play className="w-4 h-4 mr-2" />
                         Deploy to Production
                     </button>
@@ -34,7 +35,10 @@ export default function CreateAgentPage() {
 
             {/* Content Form */}
             <div className="flex-1 overflow-y-auto p-8">
-                <div className="max-w-4xl mx-auto space-y-8">
+                <form id="create-agent-form" action={async (formData) => {
+                    "use server";
+                    await createAgent(formData);
+                }} className="max-w-4xl mx-auto space-y-8">
 
                     {/* Basic Info */}
                     <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
@@ -45,12 +49,12 @@ export default function CreateAgentPage() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="col-span-1 md:col-span-2">
                                 <label className="block text-sm font-medium text-slate-700 mb-1">Agent Name</label>
-                                <input type="text" placeholder="e.g. Tokopedia Customer Success Bot" className="w-full border border-slate-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm" />
+                                <input name="name" required type="text" placeholder="e.g. Tokopedia Customer Success Bot" className="w-full border border-slate-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm" />
                             </div>
                             <div className="col-span-1 md:col-span-2">
                                 <label className="block text-sm font-medium text-slate-700 mb-1">System Prompt (The Brain)</label>
                                 <p className="text-xs text-slate-500 mb-2">Define the instructions, personality, and operational boundaries.</p>
-                                <textarea rows={6} placeholder="You are an expert customer service representative for a fashion brand..." className="w-full border border-slate-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm font-mono text-slate-700"></textarea>
+                                <textarea name="systemPrompt" required rows={6} placeholder="You are an expert customer service representative for a fashion brand..." className="w-full border border-slate-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm font-mono text-slate-700"></textarea>
                             </div>
                         </div>
                     </div>
@@ -89,15 +93,15 @@ export default function CreateAgentPage() {
                             </div>
                             <div className="space-y-4">
                                 <label className="flex items-center p-3 border border-slate-200 rounded-lg hover:bg-slate-50 cursor-pointer">
-                                    <input type="checkbox" className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500" />
+                                    <input type="checkbox" name="channelWhatsApp" value="true" className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500" />
                                     <span className="ml-3 text-sm font-medium text-slate-900">WhatsApp (Baileys)</span>
                                 </label>
                                 <label className="flex items-center p-3 border border-slate-200 rounded-lg hover:bg-slate-50 cursor-pointer">
-                                    <input type="checkbox" className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500" />
+                                    <input type="checkbox" name="channelTelegram" value="true" className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500" />
                                     <span className="ml-3 text-sm font-medium text-slate-900">Telegram Bot Webhook</span>
                                 </label>
                                 <label className="flex items-center p-3 border border-slate-200 rounded-lg hover:bg-slate-50 cursor-pointer">
-                                    <input type="checkbox" className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500" />
+                                    <input type="checkbox" name="channelWebChat" value="true" className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500" />
                                     <span className="ml-3 text-sm font-medium text-slate-900">NEXUS Web Chat Widget</span>
                                 </label>
                             </div>
@@ -134,8 +138,7 @@ export default function CreateAgentPage() {
                             </div>
                         </div>
                     </div>
-
-                </div>
+                </form>
             </div>
         </div>
     );

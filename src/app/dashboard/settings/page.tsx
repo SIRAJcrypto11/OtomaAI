@@ -1,11 +1,19 @@
 import React from "react";
 import { User, Shield, KeyRound, Bell, CreditCard, LogOut, CheckCircle2 } from "lucide-react";
+import { auth } from "@/auth";
+import { updateProfile } from "@/app/actions/settings";
 
 export const metadata = {
     title: "Settings | NEXUS AI",
 };
 
-export default function SettingsPage() {
+export default async function SettingsPage() {
+    const session = await auth();
+    const userRole = session?.user?.role || "Operator";
+    const userName = session?.user?.name || "User";
+    const userEmail = session?.user?.email || "user@nexusai.local";
+    const userInitial = userName[0].toUpperCase();
+
     return (
         <div className="flex-1 p-8 overflow-y-auto bg-slate-50">
             <div className="mb-8">
@@ -38,7 +46,10 @@ export default function SettingsPage() {
                 <div className="flex-1 space-y-8">
 
                     {/* Profile Section */}
-                    <section className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                    <form action={async (formData) => {
+                        "use server";
+                        await updateProfile(formData);
+                    }} className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
                         <div className="border-b border-slate-200 p-6">
                             <h2 className="text-lg font-semibold text-slate-900">Profile Details</h2>
                             <p className="text-sm text-slate-500 mt-1">Update your personal information and email address.</p>
@@ -46,7 +57,7 @@ export default function SettingsPage() {
                         <div className="p-6 space-y-6">
                             <div className="flex items-center gap-6">
                                 <div className="w-20 h-20 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-2xl">
-                                    A
+                                    {userInitial}
                                 </div>
                                 <div className="space-y-3">
                                     <button className="bg-white border border-slate-300 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors">
@@ -59,25 +70,25 @@ export default function SettingsPage() {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <label className="block text-sm font-medium text-slate-700 mb-1">Full Name</label>
-                                    <input type="text" defaultValue="Admin Nexus" className="w-full border border-slate-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+                                    <input name="name" type="text" defaultValue={userName} required className="w-full border border-slate-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-slate-700 mb-1">Email Address</label>
-                                    <input type="email" defaultValue="admin@nexusai.local" disabled className="w-full border border-slate-200 bg-slate-50 rounded-lg px-4 py-2 text-sm text-slate-500" />
-                                    <p className="text-xs text-slate-500 mt-1 flex items-center"><CheckCircle2 className="w-3 h-3 text-emerald-500 mr-1" /> Verified via Google</p>
+                                    <input type="email" defaultValue={userEmail} disabled className="w-full border border-slate-200 bg-slate-50 rounded-lg px-4 py-2 text-sm text-slate-500" />
+                                    <p className="text-xs text-slate-500 mt-1 flex items-center"><CheckCircle2 className="w-3 h-3 text-emerald-500 mr-1" /> Verified</p>
                                 </div>
                                 <div className="md:col-span-2">
                                     <label className="block text-sm font-medium text-slate-700 mb-1">Role in Workspace</label>
-                                    <input type="text" defaultValue="Super Admin (Owner)" disabled className="w-full border border-slate-200 bg-slate-50 rounded-lg px-4 py-2 text-sm text-slate-500" />
+                                    <input type="text" defaultValue={userRole} disabled className="w-full border border-slate-200 bg-slate-50 rounded-lg px-4 py-2 text-sm text-slate-500" />
                                 </div>
                             </div>
                         </div>
                         <div className="bg-slate-50 p-4 border-t border-slate-200 flex justify-end">
-                            <button className="bg-blue-600 text-white px-5 py-2 rounded-lg text-sm font-medium shadow-sm hover:bg-blue-700 transition-colors">
+                            <button type="submit" className="bg-blue-600 text-white px-5 py-2 rounded-lg text-sm font-medium shadow-sm hover:bg-blue-700 transition-colors">
                                 Save Changes
                             </button>
                         </div>
-                    </section>
+                    </form>
 
                     {/* Default Models Preferences */}
                     <section className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">

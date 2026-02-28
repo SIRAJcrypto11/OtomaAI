@@ -10,6 +10,10 @@ class DummyProvider {
 }
 
 export async function GET() {
+    if (process.env.NODE_ENV !== "development") {
+        return NextResponse.json({ error: "Not Found" }, { status: 404 });
+    }
+
     try {
         // 1. Initialize Memory Manager
         const memory = new MemoryManager("test-agent-1", "test-conv-1");

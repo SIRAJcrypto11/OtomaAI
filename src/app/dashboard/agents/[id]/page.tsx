@@ -1,13 +1,30 @@
 import React from "react";
-import { ArrowLeft, Play, Pause, Power, MessageSquare, Clock, Zap, Target } from "lucide-react";
+import { ArrowLeft, Play, Pause, Power, MessageSquare, Clock, Zap, Target, Bot } from "lucide-react";
 import Link from "next/link";
+import { getAgentById } from "@/app/actions/agents";
 
 export const metadata = {
     title: "Agent Detail | NEXUS AI",
 };
 
-export default function AgentDetailPage({ params }: { params: { id: string } }) {
-    // In production, fetch specific agent by params.id
+export default async function AgentDetailPage({ params }: { params: { id: string } }) {
+    const { data: agent, error } = await getAgentById(params.id);
+
+    if (error || !agent) {
+        return (
+            <div className="flex flex-col items-center justify-center h-full p-8 text-center bg-slate-50">
+                <div className="bg-white p-8 rounded-xl shadow-sm border border-slate-200 max-w-md w-full">
+                    <Bot className="w-12 h-12 text-slate-400 mx-auto mb-4" />
+                    <h2 className="text-xl font-bold text-slate-900 mb-2">Agent Not Found</h2>
+                    <p className="text-sm text-slate-500 mb-6">The agent you are looking for does not exist or you don't have permission to view it.</p>
+                    <Link href="/dashboard/agents" className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 shadow-sm transition-colors">
+                        <ArrowLeft className="w-4 h-4 mr-2" />
+                        Back to Agents
+                    </Link>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="flex flex-col h-full bg-slate-50">
@@ -19,12 +36,15 @@ export default function AgentDetailPage({ params }: { params: { id: string } }) 
                     </Link>
                     <div>
                         <div className="flex items-center gap-3">
-                            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">CS Bot Tokopedia</h1>
-                            <span className="inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700 ring-1 ring-inset ring-emerald-600/20">
-                                <Power className="w-3 h-3 mr-1" /> Active
+                            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">{agent.name}</h1>
+                            <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ring-1 ring-inset ${agent.status === 'Active' ? 'bg-emerald-50 text-emerald-700 ring-emerald-600/20' :
+                                    agent.status === 'Draft' ? 'bg-amber-50 text-amber-700 ring-amber-600/20' :
+                                        'bg-slate-50 text-slate-700 ring-slate-600/20'
+                                }`}>
+                                <Power className="w-3 h-3 mr-1" /> {agent.status}
                             </span>
                         </div>
-                        <p className="text-sm text-slate-500 mt-1">ID: agt_toko_xs892m • Generated via Gemini 1.5 Pro</p>
+                        <p className="text-sm text-slate-500 mt-1">ID: {agent.id} • Type: {agent.type}</p>
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -49,18 +69,18 @@ export default function AgentDetailPage({ params }: { params: { id: string } }) 
                         <div className="grid grid-cols-3 gap-4">
                             <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
                                 <div className="text-slate-500 text-sm font-medium flex items-center gap-2 mb-2"><MessageSquare className="w-4 h-4" /> Messages</div>
-                                <div className="text-2xl font-bold text-slate-900">12.4K</div>
-                                <div className="text-xs text-emerald-600 font-medium mt-1">+12% this week</div>
+                                <div className="text-2xl font-bold text-slate-900">{agent.metrics.totalMessages.toLocaleString()}</div>
+                                <div className="text-xs text-emerald-600 font-medium mt-1">Total volume</div>
                             </div>
                             <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
                                 <div className="text-slate-500 text-sm font-medium flex items-center gap-2 mb-2"><Zap className="w-4 h-4" /> Avg Latency</div>
-                                <div className="text-2xl font-bold text-slate-900">1.2s</div>
-                                <div className="text-xs text-emerald-600 font-medium mt-1">-0.3s overall</div>
+                                <div className="text-2xl font-bold text-slate-900">{agent.metrics.avgResponseTime}</div>
+                                <div className="text-xs text-emerald-600 font-medium mt-1">Estimated</div>
                             </div>
                             <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-                                <div className="text-slate-500 text-sm font-medium flex items-center gap-2 mb-2"><Clock className="w-4 h-4" /> Uptime</div>
-                                <div className="text-2xl font-bold text-slate-900">99.9%</div>
-                                <div className="text-xs text-slate-500 font-medium mt-1">Last incident: 14d ago</div>
+                                <div className="text-slate-500 text-sm font-medium flex items-center gap-2 mb-2"><Clock className="w-4 h-4" /> Success Rate</div>
+                                <div className="text-2xl font-bold text-slate-900">{agent.metrics.successRate}</div>
+                                <div className="text-xs text-slate-500 font-medium mt-1">Goal vs Completion</div>
                             </div>
                         </div>
 
@@ -71,24 +91,23 @@ export default function AgentDetailPage({ params }: { params: { id: string } }) 
                                 <button className="text-sm text-blue-600 font-medium hover:underline">View All</button>
                             </div>
                             <div className="flex-1 overflow-y-auto p-5 space-y-4">
-                                {[
-                                    { time: '10:42:05', user: 'wa-628112345', msg: 'Kapan barang saya dikirim?', ai: 'Halo kak, barang sedang diproses dan dijemput kurir sore ini. Resi: JP88291.', stat: 'success' },
-                                    { time: '10:39:12', user: 'tg-siraj', msg: 'Cek stok warna merah', ai: 'Untuk warna merah saat ini tersisa 5 pcs ya kak di gudang.', stat: 'success' },
-                                    { time: '10:30:00', user: 'SYSTEM', msg: 'Trigger Memory Snapshot', ai: '[Upstash] 42 context tokens saved.', stat: 'info' },
-                                    { time: '10:25:11', user: 'wa-62899988', msg: 'Bisa COD?', ai: 'Tentu bisa kak, silakan checkout menggunakan opsi pembayaran COD.', stat: 'success' },
-                                ].map((log, i) => (
-                                    <div key={i} className="flex gap-4 p-4 rounded-lg bg-slate-50 border border-slate-100">
-                                        <div className="text-xs font-mono text-slate-400 mt-1 whitespace-nowrap">{log.time}</div>
+                                {agent.recentLogs.map((log) => (
+                                    <div key={log.id} className="flex gap-4 p-4 rounded-lg bg-slate-50 border border-slate-100">
+                                        <div className="text-xs font-mono text-slate-400 mt-1 whitespace-nowrap">{log.timestamp}</div>
                                         <div>
                                             <div className="flex items-center gap-2 mb-1">
-                                                <span className="text-xs font-bold font-mono bg-blue-100 text-blue-800 px-2 py-0.5 rounded">{log.user}</span>
-                                                {log.stat === 'info' && <span className="text-xs text-slate-500 font-medium">System Action</span>}
+                                                <span className="text-xs font-bold font-mono bg-blue-100 text-blue-800 px-2 py-0.5 rounded">{log.action}</span>
                                             </div>
-                                            <p className="text-sm text-slate-700 italic border-l-2 border-slate-300 pl-3 mb-2">{log.msg}</p>
-                                            <p className="text-sm text-slate-900 font-medium break-words leading-relaxed">🤖 {log.ai}</p>
+                                            <p className="text-sm text-slate-900 font-medium break-words leading-relaxed">{log.details}</p>
                                         </div>
                                     </div>
                                 ))}
+                                {agent.recentLogs.length === 0 && (
+                                    <div className="text-center text-slate-500 py-8 text-sm flex flex-col items-center">
+                                        <MessageSquare className="w-8 h-8 text-slate-300 mb-2" />
+                                        No recent activity logged for this agent.
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>

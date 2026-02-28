@@ -9,6 +9,7 @@ import {
     ArrowUpRight,
     ArrowDownRight
 } from "lucide-react";
+import { getAnalyticsData } from "@/app/actions/analytics";
 
 export const metadata = {
     title: "Analytics | NEXUS AI",
@@ -43,7 +44,9 @@ function StatCard({ title, value, trend, isPositive, icon: Icon }: StatCardProps
     );
 }
 
-export default function AnalyticsPage() {
+export default async function AnalyticsPage() {
+    const data = await getAnalyticsData();
+
     return (
         <div className="flex-1 p-8 overflow-y-auto bg-slate-50">
             <div className="mb-8 flex items-center justify-between">
@@ -65,10 +68,10 @@ export default function AnalyticsPage() {
 
             {/* Top Metrics */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <StatCard title="Total Messages" value="124,592" trend="+14.5%" isPositive={true} icon={MessageSquare} />
-                <StatCard title="Active Agents" value="12" trend="+2" isPositive={true} icon={Bot} />
-                <StatCard title="API Requests" value="1.2M" trend="-5.2%" isPositive={false} icon={Zap} />
-                <StatCard title="Est. Revenue" value="Rp 14.5M" trend="+22.4%" isPositive={true} icon={CreditCard} />
+                <StatCard title="Total Messages" value={data.metrics.totalMessages.toLocaleString()} trend="+14.5%" isPositive={true} icon={MessageSquare} />
+                <StatCard title="Active Agents" value={data.metrics.activeAgents.toString()} trend="+2" isPositive={true} icon={Bot} />
+                <StatCard title="API Requests" value={data.metrics.apiRequests} trend="-5.2%" isPositive={false} icon={Zap} />
+                <StatCard title="Est. Revenue" value={data.metrics.revenue} trend="+22.4%" isPositive={true} icon={CreditCard} />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -79,15 +82,15 @@ export default function AnalyticsPage() {
                         <BarChart3 className="w-5 h-5 text-slate-400" />
                     </div>
                     <div className="flex-1 min-h-[300px] flex items-end gap-2 pt-10">
-                        {/* Mock bars */}
-                        {[40, 70, 45, 90, 65, 80, 55, 100, 75, 85, 60, 95].map((height, i) => (
+                        {/* Dynamic DB bars */}
+                        {data.chartData.map((height, i) => (
                             <div key={i} className="flex-1 flex flex-col justify-end group">
                                 <div
                                     className="w-full bg-blue-100 rounded-t-md hover:bg-blue-600 transition-colors relative"
                                     style={{ height: `${height}%` }}
                                 >
                                     <div className="opacity-0 group-hover:opacity-100 absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs py-1 px-2 rounded shadow-lg pointer-events-none transition-opacity whitespace-nowrap">
-                                        {height * 1000} msgs
+                                        {data.chartRaw[i]} msgs
                                     </div>
                                 </div>
                             </div>
@@ -116,13 +119,10 @@ export default function AnalyticsPage() {
                         <TrendingUp className="w-5 h-5 text-slate-400" />
                     </div>
                     <div className="space-y-6">
-                        {[
-                            { name: 'CS Bot Tokopedia', msgs: '45.2k', load: '85%' },
-                            { name: 'Lead Gen WhatsApp', msgs: '32.1k', load: '62%' },
-                            { name: 'Content Creator Assistant', msgs: '18.4k', load: '45%' },
-                            { name: 'Invoice Automation', msgs: '12.8k', load: '20%' },
-                            { name: 'Internal HR Bot', msgs: '8.4k', load: '12%' },
-                        ].map((agent, i) => (
+                        {data.topAgents.length === 0 && (
+                            <div className="text-center text-sm text-slate-500 py-8">No agent data available yet.</div>
+                        )}
+                        {data.topAgents.map((agent, i) => (
                             <div key={i} className="flex items-center justify-between">
                                 <div className="flex items-center gap-3">
                                     <div className="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-xs uppercase">

@@ -1,12 +1,14 @@
 import Link from "next/link";
 import { Bot, Mail, Building, User, Lock } from "lucide-react";
 import { signIn } from "@/auth";
+import { registerUser } from "@/app/actions/auth";
+import { redirect } from "next/navigation";
 
 export const metadata = {
     title: "Create Workspace | NEXUS AI",
 };
 
-export default function RegisterPage() {
+export default function RegisterPage({ searchParams }: { searchParams: { error?: string } }) {
     return (
         <div className="flex min-h-screen bg-slate-50 relative overflow-hidden">
             {/* Background Orbs */}
@@ -90,14 +92,30 @@ export default function RegisterPage() {
                                 </div>
                             </div>
 
-                            <form action="#" className="mt-6 space-y-4">
+                            <form action={async (formData) => {
+                                "use server";
+                                const res = await registerUser(formData);
+                                if (res?.error) {
+                                    // Normally we'd use a client component or useActionState,
+                                    // but we can pass error via URL param for simplicity in RSC
+                                    redirect(`/register?error=${encodeURIComponent(res.error)}`);
+                                }
+
+                                // On success, redirect to login with a success message
+                                redirect(`/login?registered=true`);
+                            }} className="mt-6 space-y-4">
+                                {searchParams?.error && (
+                                    <div className="mb-4 text-sm font-medium text-red-600 bg-red-50 py-2 border border-red-200 text-center rounded-lg">
+                                        {searchParams.error}
+                                    </div>
+                                )}
                                 <div>
                                     <label htmlFor="name" className="block text-sm font-medium text-slate-700">Full name</label>
                                     <div className="mt-1 relative">
                                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                             <User className="h-5 w-5 text-slate-400" />
                                         </div>
-                                        <input id="name" type="text" required className="pl-10 block w-full py-2 border border-slate-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="John Doe" />
+                                        <input id="name" name="name" type="text" required className="pl-10 block w-full py-2 border border-slate-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="John Doe" />
                                     </div>
                                 </div>
 
@@ -107,7 +125,7 @@ export default function RegisterPage() {
                                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                             <Mail className="h-5 w-5 text-slate-400" />
                                         </div>
-                                        <input id="email" type="email" required className="pl-10 block w-full py-2 border border-slate-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="john@example.com" />
+                                        <input id="email" name="email" type="email" required className="pl-10 block w-full py-2 border border-slate-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="john@example.com" />
                                     </div>
                                 </div>
 
@@ -117,7 +135,7 @@ export default function RegisterPage() {
                                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                             <Lock className="h-5 w-5 text-slate-400" />
                                         </div>
-                                        <input id="password" type="password" required className="pl-10 block w-full py-2 border border-slate-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="••••••••" />
+                                        <input id="password" name="password" type="password" required className="pl-10 block w-full py-2 border border-slate-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="••••••••" />
                                     </div>
                                 </div>
 

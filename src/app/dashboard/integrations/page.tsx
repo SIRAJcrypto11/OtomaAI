@@ -6,6 +6,11 @@ export const metadata = {
 };
 
 export default function IntegrationsPage() {
+    const geminiConnected = !!process.env.GEMINI_API_KEY;
+    const groqConnected = !!process.env.GROQ_API_KEY;
+    const postgresConnected = !!process.env.POSTGRES_URL;
+    const cloudinaryConnected = !!process.env.CLOUDINARY_API_KEY;
+
     return (
         <div className="flex-1 p-8 overflow-y-auto bg-slate-50">
             <div className="mb-8">
@@ -32,8 +37,8 @@ export default function IntegrationsPage() {
                                         <h3 className="font-semibold text-slate-900">Google Gemini</h3>
                                         <p className="text-sm text-slate-500 mt-1">Power your agents with Gemini 1.5 Pro.</p>
                                     </div>
-                                    <span className="flex items-center text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md">
-                                        <CheckCircle className="w-3 h-3 mr-1" /> Connected
+                                    <span className={`flex items-center text-xs font-medium px-2 py-1 rounded-md ${geminiConnected ? 'text-emerald-600 bg-emerald-50' : 'text-slate-500 bg-slate-100'}`}>
+                                        {geminiConnected ? <><CheckCircle className="w-3 h-3 mr-1" /> Connected</> : 'Not Configured'}
                                     </span>
                                 </div>
                                 <div className="mt-4">
@@ -52,12 +57,14 @@ export default function IntegrationsPage() {
                                         <h3 className="font-semibold text-slate-900">Groq Fast Inference</h3>
                                         <p className="text-sm text-slate-500 mt-1">Llama 3 execution at ~800 tokens/sec.</p>
                                     </div>
-                                    <span className="flex items-center text-xs font-medium text-slate-500 bg-slate-100 px-2 py-1 rounded-md">
-                                        Not Configured
+                                    <span className={`flex items-center text-xs font-medium px-2 py-1 rounded-md ${groqConnected ? 'text-emerald-600 bg-emerald-50' : 'text-slate-500 bg-slate-100'}`}>
+                                        {groqConnected ? <><CheckCircle className="w-3 h-3 mr-1" /> Connected</> : 'Not Configured'}
                                     </span>
                                 </div>
                                 <div className="mt-4">
-                                    <button className="text-sm text-slate-600 font-medium hover:text-slate-900 bg-slate-100 px-3 py-1.5 rounded-lg">Add API Key</button>
+                                    <button className={`text-sm font-medium px-3 py-1.5 rounded-lg ${groqConnected ? 'text-blue-600 hover:text-blue-700' : 'text-slate-600 hover:text-slate-900 bg-slate-100'}`}>
+                                        {groqConnected ? 'Manage API Key' : 'Add API Key'}
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -108,7 +115,7 @@ export default function IntegrationsPage() {
                                     <p className="text-sm text-slate-500">System Database & Vector Memory</p>
                                 </div>
                             </div>
-                            <span className="text-sm text-emerald-600 font-medium">Active</span>
+                            <span className={`text-sm font-medium ${postgresConnected ? 'text-emerald-600' : 'text-rose-500'}`}>{postgresConnected ? 'Active' : 'Offline'}</span>
                         </div>
                         <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex items-center justify-between">
                             <div className="flex items-center gap-4">
@@ -118,7 +125,7 @@ export default function IntegrationsPage() {
                                     <p className="text-sm text-slate-500">Media Pipeline Storage</p>
                                 </div>
                             </div>
-                            <span className="text-sm text-emerald-600 font-medium">Active</span>
+                            <span className={`text-sm font-medium ${cloudinaryConnected ? 'text-emerald-600' : 'text-rose-500'}`}>{cloudinaryConnected ? 'Active' : 'Offline'}</span>
                         </div>
                     </div>
                 </section>
