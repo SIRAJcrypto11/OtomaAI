@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# NEXUS AI — Agent Orchestrator v2.1
 
-## Getting Started
+![NEXUS AI Banner](https://via.placeholder.com/1200x400/0f172a/ffffff?text=NEXUS+AI+Agent+Orchestrator)
 
-First, run the development server:
+**NEXUS AI Agent Orchestrator** is an enterprise-grade AI-as-a-Service orchestration platform. It is designed to act as the autonomous brain for businesses, capable of seamlessly connecting LLMs (Large Language Models) like Google Gemini and Groq with real-world communication channels (WhatsApp, Telegram) through a powerful visual and programmatic interface.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🚀 Key Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 1. The Autonomous Orchestrator Brain
+- **BYOK (Bring Your Own Key) Architecture:** Securely connect and switch between leading LLM providers (Google Gemini, Groq/Mixtral) on the fly without changing core logic.
+- **ReAct Planning Framework:** Agents don't just reply; they *Reason* and *Act*, following complex multi-step workflows.
+- **Dual-Layer Memory System:**
+  - **Edge Cache:** Upstash Redis for ultra-fast, sub-millisecond conversation context retrieval.
+  - **Permanent Archive:** Vercel Postgres for robust, structured history tracking and long-term analytics.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 2. Multi-Channel Connectivity
+- **WhatsApp Headless Integration:** Powered by `@whiskeysockets/baileys`, allowing your agents to interact directly with WhatsApp users natively.
+- **Telegram Bot API:** Secure Webhook routing capable of handling thousands of simultaneous user interactions.
+- **Cloudinary AI Vision Pipeline:** Built-in media handling for processing images securely under tight infrastructure costs.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 3. Premium Operator Dashboards
+- **Visual Workflow Builder:** A React Flow (`@xyflow/react`) powered drag-and-drop canvas to orchestrate AI agent pipelines without writing code.
+- **Role-Based Access Control (RBAC):** NextAuth.js v5 protected routes.
+  - **Super Admin:** Global platform analytics, cross-workspace monitoring.
+  - **Workspace Owner:** Tenant-level billing estimates, team management, and agent deployment limits.
+  - **Operator:** Locked-in views for monitoring specific active agent logs and handling recent conversation history.
+- **Real-Time Data Analytics:** Server-side SQL aggregations fetching precise data from Vercel Postgres for active performance insights.
 
-## Learn More
+## 🏗️ Architecture Stack
 
-To learn more about Next.js, take a look at the following resources:
+- **Framework:** Next.js 14 (App Router, Server Components, Server Actions)
+- **Styling:** Tailwind CSS + shadcn/ui (Google-Standard Premium Aesthetics)
+- **Database:** Vercel Postgres (SQL)
+- **Caching:** Upstash Redis
+- **Authentication:** NextAuth.js v5 (Google OAuth + Credentials)
+- **Visuals/Routing:** `@xyflow/react`, `lucide-react`
+- **Infrastructure:** Designed for Vercel Edge & Serverless Deployment
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🌐 Credits & Acknowledgments
 
-## Deploy on Vercel
+This project was built with ❤️ by the team at **[SNISHOP](https://snishop.com/)**.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Lead Architect
+**Siraj Nur Ihrom**
+- Portfolio: [https://sirajnurihrom.vercel.app/](https://sirajnurihrom.vercel.app/)
+- GitHub: [SIRAJcrypto11](https://github.com/SIRAJcrypto11/OtomaAI)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🛠️ Usage
+
+1. Clone the repository: `git clone https://github.com/SIRAJcrypto11/OtomaAI.git`
+2. Install dependencies: `npm install`
+3. Configure Environment Variables: Copy `.env.example` to `.env.local` and fill in your Vercel Postgres URL, Auth Secret, and LLM API Keys.
+4. Run the development server: `npm run dev`
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## 📄 License
+
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
+---
+© 2026 OtomaAI (NEXUS AI). All rights reserved.
