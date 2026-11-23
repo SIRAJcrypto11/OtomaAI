@@ -20,7 +20,7 @@ interface StatCardProps {
     value: string;
     trend: string;
     isPositive: boolean;
-    icon: React.FC<any>;
+    icon: React.ComponentType<{ className?: string }>;
 }
 
 function StatCard({ title, value, trend, isPositive, icon: Icon }: StatCardProps) {

@@ -1,5 +1,5 @@
 import React from "react";
-import { User, Shield, KeyRound, Bell, CreditCard, LogOut, CheckCircle2 } from "lucide-react";
+import { User, Shield, KeyRound, Bell, CreditCard, CheckCircle2 } from "lucide-react";
 import { auth } from "@/auth";
 import { updateProfile } from "@/app/actions/settings";
 

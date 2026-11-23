@@ -65,7 +65,6 @@ export async function createAgent(formData: FormData) {
 
         const name = formData.get("name") as string;
         const systemPrompt = formData.get("systemPrompt") as string;
-        const llmEngine = formData.get("llmEngine") as string;
 
         // Channels
         const channels = [];

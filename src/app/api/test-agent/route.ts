@@ -32,11 +32,11 @@ export async function GET() {
             id: "agent-001",
             name: "TestNexus",
             systemPrompt: "You are a test agent.",
-            provider: new DummyProvider() as any
+            provider: new DummyProvider()
         });
 
         // 4. Simulate a state change
-        let agentState = agent.getStatus();
+        const agentState = agent.getStatus();
 
         // 5. Test Tool Execution
         const toolResult = await executor.executeTool("test_tool", { param: "value" });
@@ -66,10 +66,10 @@ export async function GET() {
                 toolsRegistered: registry.getAllTools().length
             }
         });
-    } catch (error: any) {
+    } catch (error) {
         return NextResponse.json({
             success: false,
-            error: error.message
+            error: error instanceof Error ? error.message : String(error)
         }, { status: 500 });
     }
 }

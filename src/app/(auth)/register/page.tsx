@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Bot, Mail, Building, User, Lock } from "lucide-react";
+import { Bot, Mail, User, Lock } from "lucide-react";
 import { signIn } from "@/auth";
 import { registerUser } from "@/app/actions/auth";
 import { redirect } from "next/navigation";

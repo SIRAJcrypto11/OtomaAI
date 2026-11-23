@@ -1,12 +1,15 @@
-import makeWASocket, { DisconnectReason, useMultiFileAuthState } from '@whiskeysockets/baileys';
+import makeWASocket, { DisconnectReason, useMultiFileAuthState as initMultiFileAuthState } from '@whiskeysockets/baileys';
+import type { WASocket } from '@whiskeysockets/baileys';
 import { Boom } from '@hapi/boom';
 import path from 'path';
 import pino from 'pino';
 import { Agent, MemoryManager } from '@/lib/orchestrator';
 import { createAIProvider } from '@/lib/ai';
 
+type BaileysLogger = NonNullable<Parameters<typeof makeWASocket>[0]>['logger'];
+
 export class WhatsAppIntegration {
-    private sock: any = null;
+    private sock: WASocket | null = null;
     private id: string;
     private sessionDir: string;
 
@@ -16,16 +19,19 @@ export class WhatsAppIntegration {
     }
 
     public async connect() {
-        const { state, saveCreds } = await useMultiFileAuthState(this.sessionDir);
+        // "useMultiFileAuthState" is a plain Baileys helper (not a React hook); it is
+        // imported under a non-"use" alias so linting treats it as a regular function.
+        const { state, saveCreds } = await initMultiFileAuthState(this.sessionDir);
 
-        this.sock = makeWASocket({
+        const sock = makeWASocket({
             auth: state,
             printQRInTerminal: true, // Will print QR in server console for user to scan
-            logger: pino({ level: 'silent' }) as any, // Suppress verbose Baileys logs
+            logger: pino({ level: 'silent' }) as unknown as BaileysLogger, // Suppress verbose Baileys logs
             browser: ['NEXUS AI Orchestrator', 'Chrome', '1.0.0']
         });
+        this.sock = sock;
 
-        this.sock.ev.on('connection.update', (update: any) => {
+        sock.ev.on('connection.update', (update) => {
             const { connection, lastDisconnect } = update;
             if (connection === 'close') {
                 const shouldReconnect = (lastDisconnect?.error as Boom)?.output?.statusCode !== DisconnectReason.loggedOut;
@@ -38,13 +44,13 @@ export class WhatsAppIntegration {
             }
         });
 
-        this.sock.ev.on('creds.update', saveCreds);
+        sock.ev.on('creds.update', saveCreds);
 
         // Listen for incoming messages
-        this.sock.ev.on('messages.upsert', async (m: any) => {
+        sock.ev.on('messages.upsert', async (m) => {
             if (m.type === 'notify') {
                 for (const msg of m.messages) {
-                    if (!msg.key.fromMe && msg.message) {
+                    if (msg.key && !msg.key.fromMe && msg.message) {
                         const sender = msg.key.remoteJid;
                         const text = msg.message.conversation || msg.message.extendedTextMessage?.text;
 
@@ -74,7 +80,7 @@ export class WhatsAppIntegration {
 
                                 // Restore Context
                                 const recentHistory = await memory.getRecentHistory(10);
-                                const formattedHistory = recentHistory.map((msg: any) => ({
+                                const formattedHistory = recentHistory.map((msg) => ({
                                     role: msg.role,
                                     content: msg.content
                                 }));
@@ -107,13 +113,14 @@ export class WhatsAppIntegration {
      * Send a standard text message
      */
     public async sendMessage(to: string, text: string) {
-        if (!this.sock) {
+        const sock = this.sock;
+        if (!sock) {
             console.error("WhatsApp socket not initialized");
             return false;
         }
 
         try {
-            await this.sock.sendMessage(to, { text });
+            await sock.sendMessage(to, { text });
             return true;
         } catch (error) {
             console.error("Failed to send WhatsApp message:", error);
@@ -123,7 +130,8 @@ export class WhatsAppIntegration {
 
     public disconnect() {
         if (this.sock) {
-            this.sock.logout();
+            const sock = this.sock;
+            sock.logout();
             this.sock = null;
         }
     }

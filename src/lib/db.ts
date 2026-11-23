@@ -6,6 +6,6 @@ import { sql } from "@vercel/postgres";
 export const db = sql;
 
 // Helper to check for multi-tenancy isolation
-export function withWorkspace(query: string, workspaceId: string) {
+export function withWorkspace() {
     // This is a conceptual helper. For real usage, we should use a query builder.
 }

@@ -12,6 +12,16 @@ declare module "next-auth" {
             workspaceId: string | null;
         } & DefaultSession["user"];
     }
+
+    interface User {
+        role?: string;
+        workspace_id?: string | null;
+    }
+
+    interface AdapterUser {
+        role?: string;
+        workspace_id?: string | null;
+    }
 }
 
 // 2. Database Connection

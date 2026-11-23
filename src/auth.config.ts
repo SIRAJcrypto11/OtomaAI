@@ -38,7 +38,7 @@ export const authConfig = {
                                     email: user.email,
                                     role: user.role || 'Operator',
                                     workspace_id: user.workspace_id
-                                } as any;
+                                };
                             }
                             return null;
                         }
@@ -60,7 +60,7 @@ export const authConfig = {
                             email: mockUser.email,
                             role: mockUser.role,
                             workspace_id: mockUser.workspace_id
-                        } as any;
+                        };
                     }
                 } catch (error) {
                     console.error("Auth error:", error);
@@ -72,25 +72,25 @@ export const authConfig = {
         })
     ],
     callbacks: {
-        async session({ session, token, user }: { session: any; token?: any; user?: any }) {
+        async session({ session, token, user }) {
             if (session.user) {
                 // If using JWT strategy, user data might be in the token
                 if (token) {
                     session.user.id = token.sub as string;
-                    session.user.role = token.role as string || "Operator";
-                    session.user.workspaceId = token.workspaceId as string || null;
+                    session.user.role = (token.role as string) || "Operator";
+                    session.user.workspaceId = (token.workspaceId as string) ?? null;
                 } else if (user) {
-                    session.user.id = user.id;
+                    if (user.id) session.user.id = user.id;
                     session.user.role = user.role || "Operator";
-                    session.user.workspaceId = user.workspace_id || null;
+                    session.user.workspaceId = user.workspace_id ?? null;
                 }
             }
             return session;
         },
-        async jwt({ token, user, account }) {
+        async jwt({ token, user }) {
             if (user) {
-                token.role = (user as any).role || "Operator";
-                token.workspaceId = (user as any).workspace_id || null;
+                token.role = user.role || "Operator";
+                token.workspaceId = user.workspace_id ?? null;
             }
             return token;
         }

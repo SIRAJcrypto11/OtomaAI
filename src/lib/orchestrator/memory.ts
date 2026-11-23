@@ -14,7 +14,7 @@ export interface MemoryMessage {
     role: "user" | "assistant" | "system";
     content: string;
     timestamp: Date;
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
 }
 
 export class MemoryManager {
@@ -80,7 +80,7 @@ export class MemoryManager {
                 `;
                 return rows.reverse().map(row => ({
                     id: row.id,
-                    role: row.role as any,
+                    role: row.role as MemoryMessage["role"],
                     content: row.content,
                     timestamp: row.created_at,
                     metadata: row.metadata

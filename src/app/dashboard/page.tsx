@@ -116,7 +116,7 @@ export default async function DashboardOverview() {
 
                     <div className="space-y-6">
                         {metrics.activities.length > 0 ? (
-                            metrics.activities.map((log: any, idx: number) => (
+                            metrics.activities.map((log, idx: number) => (
                                 <ActivityItem
                                     key={idx}
                                     title={log.title}

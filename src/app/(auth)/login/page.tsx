@@ -186,7 +186,7 @@ export default function LoginPage({ searchParams }: { searchParams: { error?: st
 
                     <div className="mt-8 text-center">
                         <p className="text-sm text-slate-600">
-                            Don't have an account?{" "}
+                            Don&apos;t have an account?{" "}
                             <Link href="/register" className="font-semibold text-blue-600 hover:text-blue-500 transition-colors">
                                 Create new workspace
                             </Link>

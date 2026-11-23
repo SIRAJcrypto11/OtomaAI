@@ -1,8 +1,9 @@
 import NextAuth from "next-auth";
+import type { Session } from "next-auth";
 import { authConfig } from "./auth.config";
 import { NextResponse, NextRequest } from "next/server";
 
-export default NextAuth(authConfig).auth((req: NextRequest & { auth: any }) => {
+export default NextAuth(authConfig).auth((req: NextRequest & { auth: Session | null }) => {
     const isLoggedin = !!req.auth;
     const { nextUrl } = req;
 

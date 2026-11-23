@@ -1,6 +1,8 @@
+export type AIRequestOptions = Record<string, unknown>;
+
 export interface AIProvider {
-    generate(prompt: string, options?: any): Promise<string>;
-    chat(messages: { role: string; content: string }[], options?: any): Promise<string>;
+    generate(prompt: string, options?: AIRequestOptions): Promise<string>;
+    chat(messages: { role: string; content: string }[], options?: AIRequestOptions): Promise<string>;
 }
 
 export abstract class BaseAIProvider implements AIProvider {
@@ -10,6 +12,6 @@ export abstract class BaseAIProvider implements AIProvider {
         this.apiKey = apiKey;
     }
 
-    abstract generate(prompt: string, options?: any): Promise<string>;
-    abstract chat(messages: { role: string; content: string }[], options?: any): Promise<string>;
+    abstract generate(prompt: string, options?: AIRequestOptions): Promise<string>;
+    abstract chat(messages: { role: string; content: string }[], options?: AIRequestOptions): Promise<string>;
 }

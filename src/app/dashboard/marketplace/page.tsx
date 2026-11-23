@@ -1,6 +1,5 @@
 import React from "react";
-import { Download, Star, ExternalLink, Search } from "lucide-react";
-import Image from "next/image";
+import { Download, Star, Search } from "lucide-react";
 import { getMarketplaceTemplates } from "@/app/actions/marketplace";
 
 export const metadata = {

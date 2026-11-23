@@ -1,7 +1,6 @@
 "use client";
 
 import { Bell, Search, User, ChevronDown } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 export default function Header() {
     return (

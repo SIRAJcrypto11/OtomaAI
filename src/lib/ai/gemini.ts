@@ -11,7 +11,7 @@ export class GeminiProvider extends BaseAIProvider {
         this.model = model;
     }
 
-    async generate(prompt: string, options?: any): Promise<string> {
+    async generate(prompt: string): Promise<string> {
         try {
             const aiModel = this.genAI.getGenerativeModel({ model: this.model });
             const result = await aiModel.generateContent(prompt);
@@ -22,7 +22,7 @@ export class GeminiProvider extends BaseAIProvider {
         }
     }
 
-    async chat(messages: { role: string; content: string }[], options?: any): Promise<string> {
+    async chat(messages: { role: string; content: string }[]): Promise<string> {
         try {
             if (messages.length === 0) return "";
 

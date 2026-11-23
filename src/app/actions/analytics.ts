@@ -57,7 +57,7 @@ export async function getAnalyticsData() {
             GROUP BY EXTRACT(MONTH FROM m.created_at)
         `;
 
-        let chartData = new Array(12).fill(0);
+        const chartData = new Array(12).fill(0);
         // Find max to calculate percentages. Default to at least 100 for scale.
         let maxCount = 100;
         chartQuery.rows.forEach(row => {

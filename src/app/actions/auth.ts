@@ -2,7 +2,6 @@
 
 import { sql } from "@vercel/postgres";
 import bcrypt from "bcryptjs";
-import { AuthError } from "next-auth";
 
 export async function registerUser(formData: FormData) {
     try {
