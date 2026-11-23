@@ -105,10 +105,10 @@ Follow these instructions to set up the project locally.
 
 ### Environment Variables
 
-Create a `.env.local` file in the root directory. You will need to provision the following keys from your respective providers.
+Copy `.env.example` to `.env.local` and fill in the values you need. You will need to provision the following keys from your respective providers.
 
 ```env
-# Authentication (NextAuth)
+# Authentication (NextAuth / Auth.js v5)
 AUTH_SECRET="your-32-character-secure-random-string"
 
 # Database (Vercel Postgres)
@@ -122,15 +122,26 @@ UPSTASH_REDIS_REST_TOKEN="your-upstash-token"
 GEMINI_API_KEY="your-google-gemini-key"
 GROQ_API_KEY="your-groq-api-key"
 
+# Telegram webhook (/api/webhooks/telegram)
+TELEGRAM_BOT_TOKEN="your-telegram-bot-token"
+
 # Media Pipeline (Cloudinary)
 CLOUDINARY_CLOUD_NAME="your-cloud-name"
 CLOUDINARY_API_KEY="your-api-key"
 CLOUDINARY_API_SECRET="your-api-secret"
+
+# At-rest encryption for BYOK keys (32 bytes / 64 hex chars; required in production)
+ENCRYPTION_KEY="openssl rand -hex 32"
+
+# Optional: keep demo accounts (admin@nexus.ai) outside development
+NEXUS_ALLOW_DEMO_AUTH="false"
 ```
 
 ### Database Setup
 
-The platform utilizes Vercel Postgres. Ensure your `POSTGRES_URL` is set, and the system's dynamic Server Actions will automatically build the necessary schemas (`users`, `agents`, `messages`, `usage_logs`, `templates`) upon first execution or sign-up.
+The platform utilizes Vercel Postgres. Apply `src/lib/db/schema.sql` to your database (via the Vercel/Neon SQL editor or `psql "$POSTGRES_URL" -f src/lib/db/schema.sql`). The schema is idempotent and includes incremental `ALTER TABLE ... ADD COLUMN IF NOT EXISTS` migrations, so re-running it after upgrades is safe. The `templates` marketplace table is created and seeded automatically on first marketplace load.
+
+Without `POSTGRES_URL`, the app still boots: login falls back to demo accounts (development only), the marketplace renders bundled fallback templates, and dashboards show zeroed metrics. Registration and agent creation require the database.
 
 ### Running the Application
 
@@ -163,10 +174,19 @@ While the Next.js Dashboard, Postgres Database, and RESTful Agents run perfectly
 *   **The Enterprise Solution**: Deploy the Next.js Dashboard on **Vercel** for the UI and DB logic, but extract and deploy the WhatsApp Baileys worker script to an always-on server environment such as a **VPS, Render, or Railway**. The persistent worker can then communicate with your Vercel Orchestrator via REST API or standard Webhooks.
 
 ### Mandatory Environment Keys for First Deploy
-Before hitting "Deploy" on Vercel, if you omit these keys from the Vercel Settings, the app will crash with an HTTP `500` error:
-- `POSTGRES_URL` (Auto-generated if using Vercel Postgres Add-on)
-- `AUTH_SECRET` (Run `npx auth secret` locally or generate a 32-char string)
+- `AUTH_SECRET` (Run `npx auth secret` locally or generate a 32-char string) — Auth.js refuses to run in production without it.
+- `POSTGRES_URL` (Auto-generated if using Vercel Postgres Add-on) — required for registration, agent creation, and persistent memory.
 - `GEMINI_API_KEY` (Or `GROQ_API_KEY`, otherwise agents cannot generate responses)
+- `ENCRYPTION_KEY` — required in production as soon as at-rest encryption of BYOK keys is used.
+- `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` — only if Google sign-in should work.
+
+### Verifying the Application
+```bash
+npm run lint   # static checks
+npm run build  # production build
+npm test       # smoke tests (uuid derivation, env gating, encryption, schema/code alignment)
+```
+For a live runtime check of the orchestrator (agent loop, tools, memory) without any API keys, run `npm run dev` and visit `/api/test-agent` (development builds only).
 
 ---
 

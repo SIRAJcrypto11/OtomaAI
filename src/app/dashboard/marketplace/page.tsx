@@ -6,9 +6,10 @@ export const metadata = {
     title: "Marketplace | NEXUS AI",
 };
 
-export default async function MarketplacePage({ searchParams }: { searchParams?: { q?: string, category?: string } }) {
-    const q = searchParams?.q || "";
-    const category = searchParams?.category || "All";
+export default async function MarketplacePage({ searchParams }: { searchParams?: Promise<{ q?: string, category?: string }> }) {
+    const params = await searchParams;
+    const q = params?.q || "";
+    const category = params?.category || "All";
     const templates = await getMarketplaceTemplates(q, category);
 
     return (

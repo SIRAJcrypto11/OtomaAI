@@ -7,8 +7,9 @@ export const metadata = {
     title: "Agent Detail | NEXUS AI",
 };
 
-export default async function AgentDetailPage({ params }: { params: { id: string } }) {
-    const { data: agent, error } = await getAgentById(params.id);
+export default async function AgentDetailPage({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = await params;
+    const { data: agent, error } = await getAgentById(id);
 
     if (error || !agent) {
         return (

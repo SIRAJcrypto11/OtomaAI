@@ -8,7 +8,8 @@ export const metadata = {
     title: "Create Workspace | NEXUS AI",
 };
 
-export default function RegisterPage({ searchParams }: { searchParams: { error?: string } }) {
+export default async function RegisterPage({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
+    const queryParams = await searchParams;
     return (
         <div className="flex min-h-screen bg-slate-50 relative overflow-hidden">
             {/* Background Orbs */}
@@ -104,9 +105,9 @@ export default function RegisterPage({ searchParams }: { searchParams: { error?:
                                 // On success, redirect to login with a success message
                                 redirect(`/login?registered=true`);
                             }} className="mt-6 space-y-4">
-                                {searchParams?.error && (
+                                {queryParams?.error && (
                                     <div className="mb-4 text-sm font-medium text-red-600 bg-red-50 py-2 border border-red-200 text-center rounded-lg">
-                                        {searchParams.error}
+                                        {queryParams.error}
                                     </div>
                                 )}
                                 <div>

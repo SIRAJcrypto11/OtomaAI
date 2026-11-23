@@ -7,7 +7,8 @@ export const metadata = {
     title: "Edit Workflow | NEXUS AI",
 };
 
-export default function WorkflowDetailPage({ params }: { params: { id: string } }) {
+export default async function WorkflowDetailPage({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = await params;
     return (
         <div className="flex flex-col h-full bg-slate-50">
             {/* Header */}
@@ -23,7 +24,7 @@ export default function WorkflowDetailPage({ params }: { params: { id: string } 
                                 Draft
                             </span>
                         </div>
-                        <p className="text-xs text-slate-500 mt-0.5">ID: wf_{params.id || 'new_89a2'} • Last edited 2 mins ago</p>
+                        <p className="text-xs text-slate-500 mt-0.5">ID: wf_{id || 'new_89a2'} • Last edited 2 mins ago</p>
                     </div>
                 </div>
 
