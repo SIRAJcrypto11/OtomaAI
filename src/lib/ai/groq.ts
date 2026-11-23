@@ -1,5 +1,6 @@
 import Groq from "groq-sdk";
-import { BaseAIProvider } from "./provider";
+import type { ChatCompletionCreateParamsNonStreaming } from "groq-sdk/resources/chat/completions";
+import { BaseAIProvider, AIRequestOptions } from "./provider";
 
 export class GroqProvider extends BaseAIProvider {
     private groq: Groq;
@@ -11,12 +12,12 @@ export class GroqProvider extends BaseAIProvider {
         this.model = model;
     }
 
-    async generate(prompt: string, options?: any): Promise<string> {
+    async generate(prompt: string, options?: AIRequestOptions): Promise<string> {
         try {
             const chatCompletion = await this.groq.chat.completions.create({
                 messages: [{ role: "user", content: prompt }],
                 model: this.model,
-                ...options,
+                ...(options as Partial<ChatCompletionCreateParamsNonStreaming>),
             });
 
             return chatCompletion.choices[0]?.message?.content || "";
@@ -26,7 +27,7 @@ export class GroqProvider extends BaseAIProvider {
         }
     }
 
-    async chat(messages: { role: string; content: string }[], options?: any): Promise<string> {
+    async chat(messages: { role: string; content: string }[], options?: AIRequestOptions): Promise<string> {
         try {
             // Mapping standard roles to Groq expectations (user, assistant, system)
             const mappedMessages = messages.map(m => ({
@@ -37,7 +38,7 @@ export class GroqProvider extends BaseAIProvider {
             const chatCompletion = await this.groq.chat.completions.create({
                 messages: mappedMessages,
                 model: this.model,
-                ...options,
+                ...(options as Partial<ChatCompletionCreateParamsNonStreaming>),
             });
 
             return chatCompletion.choices[0]?.message?.content || "";

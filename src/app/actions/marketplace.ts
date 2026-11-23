@@ -99,7 +99,7 @@ export async function getMarketplaceTemplates(searchQuery?: string, category?: s
 
         // Fetch using plain text search for simplicity
         let query = `SELECT * FROM templates WHERE 1=1`;
-        const values: any[] = [];
+        const values: unknown[] = [];
         let valueIndex = 1;
 
         if (searchQuery) {

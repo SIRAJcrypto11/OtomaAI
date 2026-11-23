@@ -12,7 +12,7 @@ export class TaskExecutor {
         this.registry = registry;
     }
 
-    public async executeTool(toolName: string, args: any, options: ExecutionOptions = {}): Promise<any> {
+    public async executeTool(toolName: string, args: Record<string, unknown>, options: ExecutionOptions = {}): Promise<unknown> {
         const tool = this.registry.getTool(toolName);
         if (!tool) {
             throw new Error(`Tool '${toolName}' not found in registry.`);
@@ -34,10 +34,10 @@ export class TaskExecutor {
                     )
                 ]);
                 return result;
-            } catch (error: any) {
-                lastError = error;
+            } catch (error) {
+                lastError = error instanceof Error ? error : new Error(String(error));
                 attempt++;
-                console.warn(`Attempt ${attempt} for tool '${toolName}' failed: ${error.message}`);
+                console.warn(`Attempt ${attempt} for tool '${toolName}' failed: ${lastError.message}`);
 
                 if (attempt < maxRetries) {
                     // Exponential backoff

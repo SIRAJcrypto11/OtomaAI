@@ -1,16 +1,12 @@
 import { NextResponse } from 'next/server';
 import { TelegramIntegration } from '@/lib/integrations/telegram';
-import { Agent, MemoryManager, ToolRegistry } from '@/lib/orchestrator';
+import { Agent, MemoryManager } from '@/lib/orchestrator';
 import { createAIProvider } from '@/lib/ai';
 // Initialize Telegram with bot token
 // In production, each workspace would have its own bot.
 // For the platform MVP, we assume a single central bot or we fetch the token from the DB.
 const telegramToken = process.env.TELEGRAM_BOT_TOKEN || "";
 const telegram = new TelegramIntegration(telegramToken);
-
-// Instantiate a persistent ToolRegistry and Provider for the webhook scope
-// Normally, this comes from a database configuration per user.
-const registry = new ToolRegistry();
 
 export async function POST(req: Request) {
     if (!telegramToken) {
@@ -57,7 +53,7 @@ export async function POST(req: Request) {
 
             // Restore recent history into the agent
             const recentHistory = await memory.getRecentHistory(10);
-            const formattedHistory = recentHistory.map((msg: any) => ({
+            const formattedHistory = recentHistory.map((msg) => ({
                 role: msg.role,
                 content: msg.content
             }));
@@ -92,7 +88,7 @@ export async function POST(req: Request) {
 
         return NextResponse.json({ status: "No message payload" });
 
-    } catch (error: any) {
+    } catch (error) {
         console.error("Telegram Webhook Error:", error);
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }

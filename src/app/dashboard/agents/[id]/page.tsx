@@ -1,5 +1,5 @@
 import React from "react";
-import { ArrowLeft, Play, Pause, Power, MessageSquare, Clock, Zap, Target, Bot } from "lucide-react";
+import { ArrowLeft, Pause, Power, MessageSquare, Clock, Zap, Target, Bot } from "lucide-react";
 import Link from "next/link";
 import { getAgentById } from "@/app/actions/agents";
 
@@ -7,8 +7,9 @@ export const metadata = {
     title: "Agent Detail | NEXUS AI",
 };
 
-export default async function AgentDetailPage({ params }: { params: { id: string } }) {
-    const { data: agent, error } = await getAgentById(params.id);
+export default async function AgentDetailPage({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = await params;
+    const { data: agent, error } = await getAgentById(id);
 
     if (error || !agent) {
         return (
@@ -16,7 +17,7 @@ export default async function AgentDetailPage({ params }: { params: { id: string
                 <div className="bg-white p-8 rounded-xl shadow-sm border border-slate-200 max-w-md w-full">
                     <Bot className="w-12 h-12 text-slate-400 mx-auto mb-4" />
                     <h2 className="text-xl font-bold text-slate-900 mb-2">Agent Not Found</h2>
-                    <p className="text-sm text-slate-500 mb-6">The agent you are looking for does not exist or you don't have permission to view it.</p>
+                    <p className="text-sm text-slate-500 mb-6">The agent you are looking for does not exist or you don&apos;t have permission to view it.</p>
                     <Link href="/dashboard/agents" className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 shadow-sm transition-colors">
                         <ArrowLeft className="w-4 h-4 mr-2" />
                         Back to Agents

@@ -2,16 +2,28 @@
 
 import { sql } from "@vercel/postgres";
 import bcrypt from "bcryptjs";
-import { AuthError } from "next-auth";
+import { isPostgresConfigured } from "@/lib/env";
 
 export async function registerUser(formData: FormData) {
     try {
-        const name = formData.get("name") as string;
-        const email = formData.get("email") as string;
+        if (!isPostgresConfigured()) {
+            return { error: "Registration requires a database (set POSTGRES_URL)." };
+        }
+
+        const name = (formData.get("name") as string || "").trim();
+        const email = (formData.get("email") as string || "").trim().toLowerCase();
         const password = formData.get("password") as string;
 
         if (!name || !email || !password) {
             return { error: "Missing required fields" };
+        }
+
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            return { error: "Please provide a valid email address" };
+        }
+
+        if (password.length < 8) {
+            return { error: "Password must be at least 8 characters" };
         }
 
         // Check if user already exists
@@ -23,14 +35,33 @@ export async function registerUser(formData: FormData) {
         // Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Here we assign a new workspace automatically for new signups
-        // In a real app we might create a new entry in 'workspaces' table first
-        const workspaceId = `ws_${Date.now()}`;
+        // Create the user first, then a workspace owned by that user, then link it.
+        // users.workspace_id is a UUID FK into workspaces(id), so an ad-hoc string
+        // like `ws_${Date.now()}` would violate the schema.
+        const { rows: userRows } = await sql`
+            INSERT INTO users (name, email, password, role)
+            VALUES (${name}, ${email}, ${hashedPassword}, 'Workspace Owner')
+            RETURNING id
+        `;
+        const userId = userRows[0]?.id;
+        if (!userId) {
+            return { error: "Could not create user record" };
+        }
 
-        // Insert user
+        const { rows: workspaceRows } = await sql`
+            INSERT INTO workspaces (name, owner_id)
+            VALUES (${`${name}'s Workspace`}, ${userId})
+            RETURNING id
+        `;
+        const workspaceId = workspaceRows[0]?.id;
+        if (!workspaceId) {
+            await sql`DELETE FROM users WHERE id = ${userId}`;
+            return { error: "Could not create workspace record" };
+        }
+
         await sql`
-            INSERT INTO users (name, email, password, role, workspace_id)
-            VALUES (${name}, ${email}, ${hashedPassword}, 'Workspace Owner', ${workspaceId})
+            UPDATE users SET workspace_id = ${workspaceId}, updated_at = NOW()
+            WHERE id = ${userId}
         `;
 
         return { success: true };

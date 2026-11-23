@@ -1,6 +1,5 @@
 "use client";
 
-import { useSession } from "next-auth/react";
 import Link from "next/link";
 import {
   Bot,
@@ -10,11 +9,9 @@ import {
   Globe,
   ChevronRight,
   MessageSquare,
-  BarChart3,
-  Layers
+  BarChart3
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import React from "react";
 
 export default function LandingPage() {
@@ -203,11 +200,11 @@ export default function LandingPage() {
   );
 }
 
-function Card({ icon, title, description }: { icon: React.ReactElement, title: string, description: string }) {
+function Card({ icon, title, description }: { icon: React.ReactElement<{ className?: string }>, title: string, description: string }) {
   return (
     <div className="p-8 rounded-2xl border bg-surface hover:border-primary/50 transition-all group">
       <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 group-hover:bg-primary transition-colors">
-        {React.cloneElement(icon, { className: "h-6 w-6 text-primary group-hover:text-white transition-colors" } as any)}
+        {React.cloneElement(icon, { className: "h-6 w-6 text-primary group-hover:text-white transition-colors" })}
       </div>
       <h3 className="text-xl font-bold text-foreground mb-3">{title}</h3>
       <p className="text-muted-foreground leading-relaxed">

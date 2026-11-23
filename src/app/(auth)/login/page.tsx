@@ -3,12 +3,14 @@ import { Bot, Mail, Lock, ShieldCheck } from "lucide-react";
 import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
 import { redirect } from "next/navigation";
+import { isDemoAuthEnabled } from "@/lib/env";
 
 export const metadata = {
     title: "Login | NEXUS AI",
 };
 
-export default function LoginPage({ searchParams }: { searchParams: { error?: string } }) {
+export default async function LoginPage({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
+    const queryParams = await searchParams;
 
     const loginAction = async (formData: FormData) => {
         "use server";
@@ -96,7 +98,7 @@ export default function LoginPage({ searchParams }: { searchParams: { error?: st
                         </div>
 
                         <div className="mt-6">
-                            {searchParams?.error === "InvalidCredentials" && (
+                            {(queryParams?.error === "InvalidCredentials" || queryParams?.error === "CredentialsSignin") && (
                                 <div className="mb-4 text-sm font-medium text-red-600 bg-red-50 py-2 border border-red-200 text-center rounded-lg">
                                     Email atau Password salah.
                                 </div>
@@ -158,23 +160,25 @@ export default function LoginPage({ searchParams }: { searchParams: { error?: st
                             </form>
                         </div>
 
-                        <div className="mt-6 border-t border-slate-100 pt-6">
-                            <div className="text-xs text-slate-500 space-y-2">
-                                <p className="font-semibold text-slate-700 mb-1">Predefined Demo Accounts:</p>
-                                <div className="flex justify-between items-center bg-slate-50 p-2 rounded border border-slate-100">
-                                    <span>Admin: <code className="text-blue-600">admin@nexus.ai</code></span>
-                                    <span className="font-mono bg-slate-200 px-1 rounded">admin</span>
-                                </div>
-                                <div className="flex justify-between items-center bg-slate-50 p-2 rounded border border-slate-100">
-                                    <span>Owner: <code className="text-blue-600">owner@nexus.ai</code></span>
-                                    <span className="font-mono bg-slate-200 px-1 rounded">owner</span>
-                                </div>
-                                <div className="flex justify-between items-center bg-slate-50 p-2 rounded border border-slate-100">
-                                    <span>User: <code className="text-blue-600">user@nexus.ai</code></span>
-                                    <span className="font-mono bg-slate-200 px-1 rounded">user</span>
+                        {isDemoAuthEnabled() && (
+                            <div className="mt-6 border-t border-slate-100 pt-6">
+                                <div className="text-xs text-slate-500 space-y-2">
+                                    <p className="font-semibold text-slate-700 mb-1">Predefined Demo Accounts:</p>
+                                    <div className="flex justify-between items-center bg-slate-50 p-2 rounded border border-slate-100">
+                                        <span>Admin: <code className="text-blue-600">admin@nexus.ai</code></span>
+                                        <span className="font-mono bg-slate-200 px-1 rounded">admin</span>
+                                    </div>
+                                    <div className="flex justify-between items-center bg-slate-50 p-2 rounded border border-slate-100">
+                                        <span>Owner: <code className="text-blue-600">owner@nexus.ai</code></span>
+                                        <span className="font-mono bg-slate-200 px-1 rounded">owner</span>
+                                    </div>
+                                    <div className="flex justify-between items-center bg-slate-50 p-2 rounded border border-slate-100">
+                                        <span>User: <code className="text-blue-600">user@nexus.ai</code></span>
+                                        <span className="font-mono bg-slate-200 px-1 rounded">user</span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        )}
 
                         <div className="mt-6">
                             <div className="flex items-center justify-center gap-1 text-xs text-slate-500">
@@ -186,7 +190,7 @@ export default function LoginPage({ searchParams }: { searchParams: { error?: st
 
                     <div className="mt-8 text-center">
                         <p className="text-sm text-slate-600">
-                            Don't have an account?{" "}
+                            Don&apos;t have an account?{" "}
                             <Link href="/register" className="font-semibold text-blue-600 hover:text-blue-500 transition-colors">
                                 Create new workspace
                             </Link>

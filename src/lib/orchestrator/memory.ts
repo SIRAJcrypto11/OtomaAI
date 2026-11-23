@@ -1,5 +1,7 @@
 import { Redis } from "@upstash/redis";
 import { sql } from "@vercel/postgres";
+import { isPostgresConfigured } from "@/lib/env";
+import { deriveUuid, isUuid } from "@/lib/uuid";
 
 const redisUrl = process.env.UPSTASH_REDIS_REST_URL;
 const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN;
@@ -14,7 +16,7 @@ export interface MemoryMessage {
     role: "user" | "assistant" | "system";
     content: string;
     timestamp: Date;
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
 }
 
 export class MemoryManager {
@@ -30,6 +32,14 @@ export class MemoryManager {
         return `agent:${this.AgentId}:conv:${this.conversationId}`;
     }
 
+    // External conversation keys (e.g. "telegram-123456") are not UUIDs, but the
+    // Postgres schema keys conversations/messages by UUID. Derive a stable UUID.
+    private getConversationUuid(): string {
+        return isUuid(this.conversationId)
+            ? this.conversationId
+            : deriveUuid(`${this.AgentId}:${this.conversationId}`);
+    }
+
     public async addMessage(message: MemoryMessage): Promise<void> {
         // 1. Save to short-term cache (Redis) - Extremely Fast
         if (redis) {
@@ -43,12 +53,17 @@ export class MemoryManager {
         }
 
         // 2. Save to persistent archive (Postgres)
-        if (process.env.POSTGRES_URL) {
+        if (isPostgresConfigured()) {
             try {
+                const conversationUuid = this.getConversationUuid();
                 await sql`
-                    INSERT INTO messages (id, conversation_id, role, content, metadata, created_at)
-                    VALUES (${message.id}, ${this.conversationId}, ${message.role}, ${message.content}, ${JSON.stringify(message.metadata || {})}, ${message.timestamp.toISOString()})
+                    INSERT INTO conversations (id, agent_id, metadata)
+                    VALUES (${conversationUuid}, NULL, ${JSON.stringify({ source_key: this.conversationId, agent_id: this.AgentId })})
                     ON CONFLICT (id) DO NOTHING;
+                `;
+                await sql`
+                    INSERT INTO messages (conversation_id, session_id, role, content, metadata, created_at)
+                    VALUES (${conversationUuid}, ${this.conversationId}, ${message.role}, ${message.content}, ${JSON.stringify(message.metadata || {})}, ${message.timestamp.toISOString()})
                 `;
             } catch (error) {
                 console.error("Failed to archive message to Postgres:", error);
@@ -70,17 +85,17 @@ export class MemoryManager {
         }
 
         // Fallback to Postgres
-        if (process.env.POSTGRES_URL) {
+        if (isPostgresConfigured()) {
             try {
                 const { rows } = await sql`
                     SELECT * FROM messages 
-                    WHERE conversation_id = ${this.conversationId}
+                    WHERE conversation_id = ${this.getConversationUuid()}
                     ORDER BY created_at DESC
                     LIMIT ${limit}
                 `;
                 return rows.reverse().map(row => ({
                     id: row.id,
-                    role: row.role as any,
+                    role: row.role as MemoryMessage["role"],
                     content: row.content,
                     timestamp: row.created_at,
                     metadata: row.metadata

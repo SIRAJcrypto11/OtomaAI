@@ -16,28 +16,28 @@ export class ReActPlanner {
         this.memory = memory;
     }
 
-    public async run(task: string): Promise<string> {
+    public async run(_task: string): Promise<string> {
         // High-level conceptual ReAct loop (Reason, Act, Observe)
         // In a full implementation, the LLM decides the tool to call.
+        // ("Task received: ${_task}" would be the first observation.)
 
-        let observation = `Task received: ${task}`;
-        let maxIterations = 5;
+        const maxIterations = 5;
         let pIteration = 0;
 
         while (pIteration < maxIterations) {
             pIteration++;
 
             // 1. Reason: Ask the agent (LLM) what to do next based on the observation
-            const prompt = `
-                Current Task: ${task}
-                Tools Available:
-                ${this.registry.getToolsDescriptions()}
-                
-                Previous Observation: ${observation}
-                
-                Based on the observation, what tool should I use next? 
-                Reply ONLY with the tool name and arguments in JSON format, or "FINISH" and the final answer.
-            `;
+            // ("Task received: ${task}" would be the first observation).
+            // The prompt template below is what Phase 3 (Tools) will send to the LLM;
+            // for now the MVP path is a passthrough, so it is kept as documentation:
+            //
+            //     Current Task: ${task}
+            //     Tools Available: ${this.registry.getToolsDescriptions()}
+            //     Previous Observation: <latest observation>
+            //     Based on the observation, what tool should I use next?
+            //     Reply ONLY with the tool name and arguments in JSON format,
+            //     or "FINISH" and the final answer.
 
             try {
                 // In an actual implementation, the agent.chat would process this prompt.

@@ -12,16 +12,26 @@ declare module "next-auth" {
             workspaceId: string | null;
         } & DefaultSession["user"];
     }
+
+    interface User {
+        role?: string;
+        workspace_id?: string | null;
+    }
+
+    interface AdapterUser {
+        role?: string;
+        workspace_id?: string | null;
+    }
 }
 
-// 2. Database Connection
-const pool = new Pool({
-    connectionString: process.env.POSTGRES_URL,
-});
+// 2. Database Connection (only when configured; keeps local runs without a DB alive)
+const pool = process.env.POSTGRES_URL
+    ? new Pool({ connectionString: process.env.POSTGRES_URL })
+    : null;
 
 // 3. Auth Configuration with Database Adapter
 export const { handlers, auth, signIn, signOut } = NextAuth({
     ...authConfig,
-    adapter: PostgresAdapter(pool),
+    ...(pool ? { adapter: PostgresAdapter(pool) } : {}),
     session: { strategy: "jwt" }, // Required to work seamlessly with middleware
 });
